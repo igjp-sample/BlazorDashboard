@@ -1,0 +1,95 @@
+﻿.overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: gray;
+    opacity: 0.7;
+    z-index: 2147483647;
+}
+
+.overlayTitle {
+    opacity: 1;
+    color: black;
+    font-size: xx-large;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.progressMessage {
+}
+
+.progressStyle {
+    padding-left : 12px;
+    padding-right : 12px;
+    background : white;
+    opacity : 0.7;
+    padding-top : 12px;
+    padding-bottom : 12px;
+}
+
+.progressStyleLoading {
+    display : block !important;
+}
+
+.dashboardList {
+    padding: 0;
+}
+.dashboardItem {
+    padding: 12px;
+
+    list-style-type: none !important;
+    color: #2b2c34;
+    margin: 3px;
+}
+
+.dashboardItem:hover {
+    background: #d1d1e9 !important;
+    cursor: pointer;
+}
+
+.dashboardItemActive {
+    background: #d1d1e9 !important;
+}
+
+.fileUploadRegion {
+    padding-top : 12px;
+    padding-bottom : 12px;
+    padding-left : 12px;
+}
+
+.uploadFileBtn {
+    display: inline-block;
+    overflow: hidden;
+    position: relative;
+    padding: 1em;
+    border: 1px solid #dd0000;
+    background: #dd0000;
+    color: #fff;
+}
+
+.uploadFileBtn input[type="file"] {
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 0;
+    font-size: 100px;
+    cursor: pointer;
+}
+
+
+.drop-zone {
+    padding: 32px;
+    border: dashed 2px transparent;
+    transition: border linear 0.2s;
+}
+
+/* hover CSS クラスが付いたら、オレンジ色の破線の枠を表示するよう定義 */
+.drop-zone.hover {
+    border: dashed 2px darkorange;
+}

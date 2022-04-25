@@ -1,0 +1,148 @@
+﻿@using Infragistics.Documents.Excel
+@using System 
+@using System.IO
+@inject IIgniteUIBlazor IgniteUIBlazor;
+@using Microsoft.JSInterop
+@using Microsoft.JSInterop.WebAssembly
+@using System.Collections.ObjectModel
+@using System.Collections.Specialized
+@using Toolbelt.Blazor.FileDropZone
+@using Color = MudBlazor.Color
+@using Size = MudBlazor.Size
+
+<FileDropZone class="drop-zone">
+    <div class="fileUploadRegion">
+        <InputFile OnChange="@LoadFiles" id="uploadBtn" Style="display:none;" />
+        <Label for="uploadBtn" class="mud-button-root mud-button mud-button-filled mud-button-filled-secondary mud-button-filled-size-medium mud-ripple">
+            ファイル選択
+        </Label>
+    </div>
+</FileDropZone　>
+
+<ul class="dashboardList">
+    @foreach(var item in Items)
+    {
+        <li class="dashboardItem @(ActiveItem == item ? "dashboardItemActive" : "")"
+            @onclick="(s => onSelectedItem(item))">@item.Title</li>
+    }
+</ul>
+
+
+
+
+
+@if(isLoading == true)
+{
+    <div class="progressStyle">
+        <p class="progressMessage">
+            データを設定中です
+        </p>
+        <MudProgressLinear Color="Color.Primary" Indeterminate="true"  />
+    </div>
+}
+
+
+
+
+@code {
+
+    [Inject]
+    public IJSRuntime Runtime { get; set; }
+
+    [Inject]
+    public DashboardService DashboardService  { get; set; }
+
+    [Parameter]
+    public EventCallback<MenuSelectedEventArgs> OnSelectedItemCallback { get; set; }
+
+    private ObservableCollection<DashboardItem> Items;
+
+    public DashboardItem? ActiveItem;
+
+    //private List<IBrowserFile> loadedFiles = new();
+    List<UploadFile> loadedFiles = new List<UploadFile>();
+    private long maxFileSize = 1024 * 15;
+    private int maxAllowedFiles = 3;
+    private bool isLoading;
+
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Workbook.InProcessRuntime = (IJSInProcessRuntime)this.Runtime;
+
+        Items = DashboardService.Items;
+
+    }
+
+    private void onSelectedItem(DashboardItem item)
+    {
+        MenuSelectedEventArgs args = new MenuSelectedEventArgs();
+        args.SelectedItem = item;
+        OnSelectedItemCallback.InvokeAsync(args);
+        ActiveItem = item;
+    }
+
+
+    private async void LoadFiles(InputFileChangeEventArgs e)
+    {
+        isLoading = true;
+        loadedFiles.Clear();
+
+        foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
+        {
+            try
+            {
+                StateHasChanged();
+                var buffers = new byte[file.Size];
+
+                await file.OpenReadStream().ReadAsync(buffers);
+                var uploadFile = new UploadFile()
+                {
+                    FileName = file.Name,
+                    ContentType = file.ContentType,
+                    Size = file.Size,
+                    LastModified = file.LastModified,
+                    Content = buffers
+                };
+
+                loadedFiles.Add(uploadFile);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
+        }
+
+        //DashboardService.AddDashboardItem(loadedFiles[0].FileName,wb2);
+        DashboardService.AddDashboardItemAsync(loadedFiles[0].FileName,loadedFiles[0].Content,
+            (item) => {
+            isLoading = false;
+            StateHasChanged();
+        });
+        
+
+    }
+
+    private void CollectionChangeEvent(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        Items.CollectionChanged -= CollectionChangeEvent;
+@*        isLoading = false;*@
+    }
+
+    public class UploadFile
+    {
+        public string FileName { get; set; }
+        public byte[] Content { get; set; }
+        public DateTimeOffset LastModified { get; set; }
+        public string ContentType { get; set; }
+        public long Size { get; set; }
+    }
+
+    public class MenuSelectedEventArgs : EventArgs
+    {
+        public DashboardItem SelectedItem { get; set; }
+    }
+
+}

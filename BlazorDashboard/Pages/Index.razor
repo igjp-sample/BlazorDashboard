@@ -1,0 +1,53 @@
+﻿@page "/"
+@using System.Data
+@using static BlazorDashboard.Components.DashboardMenu
+@inject IJSRuntime JS
+
+<PageTitle>Blazor Dashboard</PageTitle>
+
+
+    <igc-dockmanager id="dockManager" class="dockmanagerContainer">
+        <div slot="content1" class="dockManagerContent"><DashboardMenu OnSelectedItemCallback="OnSelectedDashboard"></DashboardMenu></div>
+        <div slot="content2" class="dockManagerContent"><GridView GridDataTable="@GridDT"></GridView></div>
+        <div slot="content3" class="dockManagerContent"><ChartView DataTable="@GridDT"></ChartView></div>
+
+    </igc-dockmanager>
+
+
+@code {
+    [Parameter]
+    public string? id { get; set; }
+
+    [Inject]
+    public DashboardService DashboardService { get; set; }
+
+    private DataTable GridDT;
+
+    #region ダッシュボード選択時のイベント
+    private void OnSelectedDashboard(MenuSelectedEventArgs e)
+    {
+        this.GridDT = e.SelectedItem.DataTable;
+    }
+    #endregion
+
+
+    private void setDataTable()
+    {
+        this.GridDT = DashboardService.Items[0].DataTable;
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            JS.InvokeVoidAsync("settingDockManager");
+        }
+        return base.OnAfterRenderAsync(firstRender);
+    }
+}

@@ -1,0 +1,62 @@
+﻿@using IgniteUI.Blazor.Controls
+@using System.Data
+@using Newtonsoft.Json
+@inject IIgniteUIBlazor IgniteUIBlazor;
+@inject IJSRuntime JS;
+
+@code {
+
+
+    private DataTable? _GridDataTable;
+
+    [Parameter]
+    public DataTable? GridDataTable
+    {
+        get
+        {
+            return _GridDataTable;
+        }
+        set
+        {
+            _GridDataTable = value;
+            GenerateData();
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        IgbDataGridModule.Register(IgniteUIBlazor);
+    }
+
+    public void GenerateData()
+    {
+
+        if(_GridDataTable != null)
+        {
+            var jsonData = JsonConvert.SerializeObject(_GridDataTable);
+            JS.InvokeVoidAsync("settingDataGrid", jsonData);
+        }
+
+    }
+}
+
+
+<div class="dataGridStyle">
+    <IgbDataGrid
+          
+                id="igbDataGrid"
+                Height="100%"
+                Width="100%"
+                AutoGenerateColumns="true">
+    </IgbDataGrid>
+</div>
+
+@if(GridDataTable == null)
+{
+    <div class="overlay">
+        <span class="overlayTitle">
+            データを選択してください
+        </span>
+    </div>
+}

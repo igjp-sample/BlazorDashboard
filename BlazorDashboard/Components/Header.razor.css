@@ -1,0 +1,17 @@
+﻿.pageHeader {
+    height: 54px;
+    display : flex;
+}
+
+.pageTitle {
+    padding-left: 12px;
+    padding-top: 8px;
+    font-size: xx-large;
+
+}
+
+.pageMenu {
+    margin-left : auto;
+    padding-right : 12px;
+    padding-top : 12px;
+}
