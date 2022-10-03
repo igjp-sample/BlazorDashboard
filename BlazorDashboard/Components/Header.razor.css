@@ -1,17 +1,28 @@
 ﻿.pageHeader {
     height: 54px;
-    display : flex;
+    display: flex;
 }
 
 .pageTitle {
     padding-left: 12px;
     padding-top: 8px;
     font-size: xx-large;
-
 }
 
 .pageMenu {
-    margin-left : auto;
-    padding-right : 12px;
-    padding-top : 12px;
+    margin-left: auto;
+    padding-right: 12px;
+    padding-top: 12px;
 }
+
+    .pageMenu a {
+        color: #fff;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        border-radius: 4px;
+        background: #ff4081ff;
+        align-items: center;
+        justify-content: space-around;
+        text-decoration: none;
+    }

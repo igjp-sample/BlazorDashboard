@@ -1,31 +1,13 @@
-﻿@inject IIgniteUIBlazor IgniteUIBlazor;
-@using Color = MudBlazor.Color
-@using Size = MudBlazor.Size
-@inject NavigationManager NavigationManager
-@inject IJSRuntime jsRuntime
+﻿<div class="pageHeader">
 
-<div class="pageHeader">
     <div class="pageTitle">
         Blazor Dashboard
     </div>
 
     <div class="pageMenu">
-        <MudIconButton  @onclick="OnMoveToInfragistics" Icon="@Icons.Material.Outlined.Sms" Color="Color.Secondary" Size="Size.Medium" Variant="Variant.Filled"></MudIconButton>
+        <a href="https://jp.infragistics.com/products/ignite-ui-blazor" target="_blank">
+            <span class="material-icons">sms</span>
+        </a>
     </div>
 
 </div>
-
-@code {
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        //IgbIconButtonModule.Register(IgniteUIBlazor);
-    }
-
-    public async void OnMoveToInfragistics()
-    {
-        string url = "https://jp.infragistics.com/products/ignite-ui-blazor";
-        await jsRuntime.InvokeAsync<object>("open", url, "_blank");
-    }
-}
