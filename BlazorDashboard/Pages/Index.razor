@@ -2,52 +2,76 @@
 @using System.Data
 @using static BlazorDashboard.Components.DashboardMenu
 @inject IJSRuntime JS
+@inject DashboardService DashboardService
 
 <PageTitle>Blazor Dashboard</PageTitle>
 
-
-    <igc-dockmanager id="dockManager" class="dockmanagerContainer">
+<div>
+    <IgbDockManager id="dockmanager1" Layout="this._InitialLayout">
         <div slot="content1" class="dockManagerContent"><DashboardMenu OnSelectedItemCallback="OnSelectedDashboard"></DashboardMenu></div>
-        <div slot="content2" class="dockManagerContent"><GridView GridDataTable="@GridDT"></GridView></div>
-        <div slot="content3" class="dockManagerContent"><ChartView DataTable="@GridDT"></ChartView></div>
-
-    </igc-dockmanager>
-
+        <div slot="content2" class="dockManagerContent"><GridView GridDataTable="@SelectedDataTable"></GridView></div>
+        <div slot="content3" class="dockManagerContent"><ChartView DataTable="@SelectedDataTable"></ChartView></div>
+    </IgbDockManager>
+</div>
 
 @code {
     [Parameter]
     public string? id { get; set; }
 
-    [Inject]
-    public DashboardService DashboardService { get; set; }
+    private DataTable? SelectedDataTable;
 
-    private DataTable GridDT;
+#pragma warning disable BL0005
+    /// <summary>
+    /// ドックマネージャーの初期レイアウト
+    /// </summary>
+    private readonly IgbDockManagerLayout _InitialLayout = new IgbDockManagerLayout
+        {
+            RootPane = new IgbSplitPane
+            {
+                PaneType = DockManagerPaneType.SplitPane,
+                Orientation = SplitPaneOrientation.Horizontal,
+                Panes = new IgbDockManagerPaneCollection
+                {
+                    new IgbContentPane
+                    {
+                        PaneType = DockManagerPaneType.ContentPane,
+                        ContentId = "content1",
+                        Header = "データソース",
+                        Size = 30
+                    },
+                    new IgbSplitPane
+                    {
+                        PaneType = DockManagerPaneType.SplitPane,
+                        Orientation = SplitPaneOrientation.Vertical,
+                        Size = 200,
+                        Panes = new IgbDockManagerPaneCollection
+                        {
+                            new IgbContentPane
+                            {
+                                PaneType = DockManagerPaneType.ContentPane,
+                                ContentId = "content2",
+                                Header = "データグリッド",
+                                Size = 100
+                            },
+                            new IgbContentPane
+                            {
+                                PaneType = DockManagerPaneType.ContentPane,
+                                ContentId = "content3",
+                                Header = "チャート",
+                                Size = 200
+                            }
+                        }
+                    }
+                }
+            }
+        };
+#pragma warning restore BL0005
 
-    #region ダッシュボード選択時のイベント
+    /// <summary>
+    /// ダッシュボード選択時に呼び出されます。
+    /// </summary>
     private void OnSelectedDashboard(MenuSelectedEventArgs e)
     {
-        this.GridDT = e.SelectedItem.DataTable;
-    }
-    #endregion
-
-
-    private void setDataTable()
-    {
-        this.GridDT = DashboardService.Items[0].DataTable;
-    }
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-    }
-
-
-    protected override Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            JS.InvokeVoidAsync("settingDockManager");
-        }
-        return base.OnAfterRenderAsync(firstRender);
+        this.SelectedDataTable = e.SelectedItem.DataTable;
     }
 }

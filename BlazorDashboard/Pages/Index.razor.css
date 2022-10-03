@@ -1,6 +1,4 @@
-﻿.dockmanagerContainer {
+﻿::deep #dockmanager1 {
+    width: 100%;
     height: calc(100vh - 78px);
-}
-.dockManagerContent {
-
 }
