@@ -4,130 +4,140 @@
 @using System.Collections.ObjectModel
 @using System.Collections.Specialized
 @using Toolbelt.Blazor.FileDropZone
-@inject IIgniteUIBlazor IgniteUIBlazor
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+@inject DashboardService DashboardService
 
-<FileDropZone class="drop-zone">
-    <div class="fileUploadRegion">
-        <InputFile OnChange="@LoadFiles" id="uploadBtn" Style="display:block;" />
-        @*<IgbButton Variant="ButtonVariant.Contained">ファイル選択</IgbButton>*@
-    </div>
-</FileDropZone>
+<div class="dashboard-menu-container">
 
-<ul class="dashboardList">
-    @foreach (var item in Items)
-    {
-        <li class="dashboardItem @(ActiveItem == item ? "dashboardItemActive" : "")"
-        @onclick="(s => onSelectedItem(item))">@item.Title</li>
-    }
-</ul>
+    <FileDropZone class="drop-zone">
 
-@if (isLoading == true)
-{
-    <div class="progressStyle">
-        <p class="progressMessage">
-            データを設定中です
-        </p>
-        @*<MudProgressLinear Color="Color.Primary" Indeterminate="true" />*@
-    </div>
-}
+        <div @ref="FileSelectorRef" class="fileUploadRegion">
+            <InputFile OnChange="@LoadFiles" style="display:none;" />
+            <IgbButton Class="file-selector-button" Variant="ButtonVariant.Contained" @onclick="OnClickSelectFile">
+                ファイル選択
+            </IgbButton>
+            <p class="guide-message">又はここにファイルをドラッグ & ドロップ</p>
+        </div>
+
+        <ul class="dashboardList">
+            @if (this.Items != null)
+            {
+                foreach (var item in this.Items)
+                {
+                    <li class="dashboardItem @(ActiveItem == item ? "dashboardItemActive" : "")" @onclick="(s => OnItemSelected(item))">
+                        @item.Title
+                    </li>
+                }
+            }
+        </ul>
+
+        @if (this.IsLoading == true)
+        {
+            <div class="progressStyle">
+                <p class="progressMessage">
+                    データを設定中です
+                </p>
+                <IgbLinearProgress Variant="ProgressBaseVariant.Primary" Indeterminate="true" />
+            </div>
+        }
+
+    </FileDropZone>
+</div>
 
 @code {
-
-    [Inject]
-    public IJSRuntime Runtime { get; set; }
-
-    [Inject]
-    public DashboardService DashboardService { get; set; }
 
     [Parameter]
     public EventCallback<MenuSelectedEventArgs> OnSelectedItemCallback { get; set; }
 
-    private ObservableCollection<DashboardItem> Items;
+    private ObservableCollection<DashboardItem>? Items;
 
     public DashboardItem? ActiveItem;
 
-    //private List<IBrowserFile> loadedFiles = new();
-    List<UploadFile> loadedFiles = new List<UploadFile>();
-    private long maxFileSize = 1024 * 15;
-    private int maxAllowedFiles = 3;
-    private bool isLoading;
+    private const long MaxFileSize = 1024 * 15;
 
+    private const int MaxAllowedFiles = 3;
 
+    private bool IsLoading;
+
+    private ElementReference FileSelectorRef;
+
+    private IJSObjectReference? JSModule;
 
     protected override void OnInitialized()
     {
-        base.OnInitialized();
-        Workbook.InProcessRuntime = (IJSInProcessRuntime)this.Runtime;
-
-        Items = DashboardService.Items;
-
+        Workbook.InProcessRuntime = (IJSInProcessRuntime)this.JS;
+        this.Items = this.DashboardService.Items;
     }
 
-    private void onSelectedItem(DashboardItem item)
+    private async ValueTask<IJSObjectReference> GetJSModuleAsync()
     {
-        MenuSelectedEventArgs args = new MenuSelectedEventArgs();
-        args.SelectedItem = item;
-        OnSelectedItemCallback.InvokeAsync(args);
-        ActiveItem = item;
-    }
-
-
-    private async void LoadFiles(InputFileChangeEventArgs e)
-    {
-        isLoading = true;
-        loadedFiles.Clear();
-
-        foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
+        if (this.JSModule == null)
         {
-            try
-            {
-                StateHasChanged();
-                var buffers = new byte[file.Size];
+            this.JSModule = await this.JS.InvokeAsync<IJSObjectReference>("import", "./Components/DashboardMenu.razor.js");
+        }
+        return this.JSModule;
+    }
 
-                await file.OpenReadStream().ReadAsync(buffers);
-                var uploadFile = new UploadFile()
-                    {
-                        FileName = file.Name,
-                        ContentType = file.ContentType,
-                        Size = file.Size,
-                        LastModified = file.LastModified,
-                        Content = buffers
-                    };
+    private async Task OnClickSelectFile()
+    {
+        var module = await this.GetJSModuleAsync();
+        await module.InvokeVoidAsync("onClickSelectFile", FileSelectorRef);
+    }
 
-                loadedFiles.Add(uploadFile);
-            }
-            catch (Exception ex)
+    private void OnItemSelected(DashboardItem item)
+    {
+        this.OnSelectedItemCallback.InvokeAsync(new(item));
+        this.ActiveItem = item;
+    }
+
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        this.IsLoading = true;
+        this.StateHasChanged();
+        await Task.Delay(200);
+
+        try
+        {
+            foreach (var file in e.GetMultipleFiles(MaxAllowedFiles))
             {
-                Console.WriteLine(ex.StackTrace);
+                try
+                {
+                    var buffers = new byte[file.Size];
+                    await file.OpenReadStream().ReadAsync(buffers);
+                    DashboardService.AddDashboardItem(file.Name, buffers);
+                    this.StateHasChanged();
+                    await Task.Delay(200);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.StackTrace);
+                }
             }
         }
-
-        //DashboardService.AddDashboardItem(loadedFiles[0].FileName,wb2);
-        DashboardService.AddDashboardItemAsync(loadedFiles[0].FileName, loadedFiles[0].Content,
-        (item) =>
+        finally
         {
-            isLoading = false;
-            StateHasChanged();
-        });
+            this.IsLoading = false;
+            if (this.Items != null)
+            {
+                this.OnItemSelected(this.Items.Last());
+            }
+            this.StateHasChanged();
+        }
     }
 
-    private void CollectionChangeEvent(object? sender, NotifyCollectionChangedEventArgs e)
+    public async ValueTask DisposeAsync()
     {
-        Items.CollectionChanged -= CollectionChangeEvent;
-        @*        isLoading = false;*@
-    }
-
-    public class UploadFile
-    {
-        public string FileName { get; set; }
-        public byte[] Content { get; set; }
-        public DateTimeOffset LastModified { get; set; }
-        public string ContentType { get; set; }
-        public long Size { get; set; }
+        if (this.JSModule != null) await this.JSModule.DisposeAsync();
     }
 
     public class MenuSelectedEventArgs : EventArgs
     {
-        public DashboardItem SelectedItem { get; set; }
+        public DashboardItem SelectedItem { get; }
+
+        public MenuSelectedEventArgs(DashboardItem selectedItem)
+        {
+            this.SelectedItem = selectedItem;
+        }
     }
 }
