@@ -1,8 +1,12 @@
 ﻿@page "/"
 @using System.Data
+@using Blazored.LocalStorage
 @using static BlazorDashboard.Components.DashboardMenu
+@implements IAsyncDisposable
 @inject IJSRuntime JS
 @inject DashboardService DashboardService
+@inject ILocalStorageService LocalStorage
+@inject DockManagerHelper Helper
 
 <PageTitle>Blazor Dashboard</PageTitle>
 
@@ -15,10 +19,13 @@
 </div>
 
 @code {
-    [Parameter]
-    public string? id { get; set; }
 
     private DataTable? SelectedDataTable;
+
+    /// <summary>
+    /// 最後に購読破棄するために、ドックマネージャーのイベント購読を保持するリスト
+    /// </summary>
+    private readonly List<IAsyncDisposable> _Subscriptions = new();
 
 #pragma warning disable BL0005
     /// <summary>
@@ -73,5 +80,39 @@
     private void OnSelectedDashboard(MenuSelectedEventArgs e)
     {
         this.SelectedDataTable = e.SelectedItem.DataTable;
+    }
+
+    /// <summary>
+    /// 描画が完了するたびに呼び出されます (以降、ローカルストレージへのアクセスが可能になります)
+    /// </summary>
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // ブラウザのローカルストレージに保存しておいたドックマネージャーのレイアウト情報から、レイアウトを復元
+            var layout = await this.LocalStorage.GetItemAsStringAsync("layout");
+            if (!string.IsNullOrEmpty(layout)) await this.Helper.RestoreLayoutAsync("#dockmanager1", layout);
+
+            // ドックマネージャーが発行するイベントを購読
+            this._Subscriptions.Add(await this.Helper.SubscribeLayoutChangeEventAsync("#dockmanager1", OnLayoutChange));
+        }
+    }
+
+    /// <summary>
+    /// ドックマネージャーのレイアウトが変更されたときに呼び出され、変更後のレイアウト情報をブラウザのローカルストレージに保存します。
+    /// </summary>
+    private async ValueTask OnLayoutChange(string? layout)
+    {
+        if (layout == null) return;
+        await this.LocalStorage.SetItemAsStringAsync("layout", layout);
+    }
+
+    /// <summary>
+    /// このコンポーネントが破棄されるときに呼び出され、購読していたドックマネージャーのイベント購読を破棄します。
+    /// </summary>
+    public async ValueTask DisposeAsync()
+    {
+        var valueTasks = this._Subscriptions.Select(subscription => subscription.DisposeAsync()).ToArray();
+        foreach (var valueTask in valueTasks) await valueTask;
     }
 }

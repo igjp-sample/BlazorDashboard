@@ -17,6 +17,7 @@
     <PackageReference Include="IgniteUI.Blazor.Documents.Excel" Version="22.1.41" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.9" PrivateAssets="all" />
+    <PackageReference Include="Blazored.LocalStorage" Version="4.2.0" />
     <PackageReference Include="PublishSPAforGitHubPages.Build" Version="2.0.1" />
     <PackageReference Include="Toolbelt.Blazor.FileDropZone" Version="2.0.0" />
   </ItemGroup>
