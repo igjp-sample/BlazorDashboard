@@ -1,8 +1,8 @@
 ﻿@using System.IO
-@using Infragistics.Documents.Excel
-@using Microsoft.JSInterop.WebAssembly
 @using System.Collections.ObjectModel
 @using System.Collections.Specialized
+@using Infragistics.Documents.Excel
+@using Microsoft.JSInterop.WebAssembly
 @using Toolbelt.Blazor.FileDropZone
 @implements IAsyncDisposable
 @inject IJSRuntime JS
@@ -25,7 +25,7 @@
             {
                 foreach (var item in this.Items)
                 {
-                    <li class="dashboardItem @(ActiveItem == item ? "dashboardItemActive" : "")" @onclick="(s => OnItemSelected(item))">
+                    <li @key="item.ID" class="dashboardItem @(ActiveItem == item ? "dashboardItemActive" : "")" @onclick="(s => OnItemSelected(item))">
                         @item.Title
                     </li>
                 }
