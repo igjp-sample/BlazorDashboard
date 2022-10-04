@@ -4,145 +4,154 @@
 @inject IIgniteUIBlazor IgniteUIBlazor
 @inject IJSRuntime JS
 
-<div>
-    <label class="options-label">Category Type: </label>
-    <select value=@SeriesType @onchange="OnSeriesTypeChanged">
-        <option>Column</option>
-        <option>Area</option>
-        <option>Point</option>
-        <option>Line</option>
-        <option>Spline</option>
-        <option>Spline Area</option>
-        <option>Step Area</option>
-        <option>Step Line</option>
-        <option>Waterfall</option>
-    </select>
+<div class="chart-view">
 
-    <span class="legend-title">X軸: </span>
-    <select @bind="XColumn">
-        @foreach (var column in ColumnsX)
-        {
-            <option>@column</option>
-        }
-    </select>
+    <div class="control-bar">
+        <label class="options-label">Category Type: </label>
+        <IgbDropdown Change="OnSeriesTypeChanged">
+            <IgbButton slot="target">@SeriesType</IgbButton>
+            @foreach (var type in SeriesTypes)
+            {
+                <IgbDropdownItem Selected="@(this.SeriesType == type)" Value="@type">
+                    @type
+                </IgbDropdownItem>
+            }
+        </IgbDropdown>
 
-    <span class="legend-title">Y軸: </span>
-    <select @bind="YColumn">
-        @foreach (var column in ColumnsY)
-        {
-            <option>@column</option>
-        }
-    </select>
-</div>
+        <span class="legend-title">X軸: </span>
+        <IgbDropdown Change="@(e => this.XColumn = e.Detail.Value)">
+            <IgbButton slot="target">@XColumn</IgbButton>
+            @foreach (var column in ColumnsX)
+            {
+                <IgbDropdownItem Selected="@(this.XColumn == column)" Value="@column">
+                    @column
+                </IgbDropdownItem>
+            }
+        </IgbDropdown>
 
-<div @ref="DataChartContainerRef" class="dataChartStyle">
+        <span class="legend-title">Y軸: </span>
+        <IgbDropdown Change="@(e => this.YColumn = e.Detail.Value)">
+            <IgbButton slot="target">@YColumn</IgbButton>
+            @foreach (var column in ColumnsY)
+            {
+                <IgbDropdownItem Selected="@(this.YColumn == column)" Value="@column">
+                    @column
+                </IgbDropdownItem>
+            }
+        </IgbDropdown>
 
-    <IgbDataChart Height="100%" Width="100%"
-                  TitleTopMargin="10"
-                  IsHorizontalZoomEnabled="true"
-                  IsVerticalZoomEnabled="true">
+    </div>
 
-        <IgbCategoryXAxis Name="xAxis" Label="@XColumn" Title="@XColumn" />
-        <IgbNumericYAxis Name="yAxis" Title="@YColumn" TitleLeftMargin="10" MinimumValue="0" />
+    <div @ref="DataChartContainerRef" class="data-chart-area">
 
-        @if (SeriesType == "Column")
-        {
-            <IgbColumnSeries Name="series1"
-                         ValueMemberPath="@YColumn"
-                         Title="@YColumn"
-                         XAxisName="xAxis"
-                         YAxisName="yAxis">
-            </IgbColumnSeries>
-        }
+        <IgbDataChart Height="100%" Width="100%"
+                      TitleTopMargin="10"
+                      IsHorizontalZoomEnabled="true"
+                      IsVerticalZoomEnabled="true">
 
-        @if (SeriesType == "Line")
-        {
-            <IgbLineSeries Name="series1"
-                       ValueMemberPath="@YColumn"
-                       Title="@YColumn"
-                       XAxisName="xAxis"
-                       YAxisName="yAxis">
-            </IgbLineSeries>
-        }
+            <IgbCategoryXAxis Name="xAxis" Label="@XColumn" Title="@XColumn" />
+            <IgbNumericYAxis Name="yAxis" Title="@YColumn" TitleLeftMargin="10" MinimumValue="0" />
 
-        @if (SeriesType == "Area")
-        {
-            <IgbAreaSeries Name="series1"
-                       ValueMemberPath="@YColumn"
-                       Title="@YColumn"
-                       XAxisName="xAxis"
-                       YAxisName="yAxis">
-            </IgbAreaSeries>
-        }
-
-        @if (SeriesType == "Point")
-        {
-            <IgbPointSeries Name="series1"
-                        ValueMemberPath="@YColumn"
-                        Title="@YColumn"
-                        XAxisName="xAxis"
-                        YAxisName="yAxis">
-            </IgbPointSeries>
-        }
-
-        @if (SeriesType == "Spline")
-        {
-            <IgbSplineSeries Name="series1"
-                         ValueMemberPath="@YColumn"
-                         Title="@YColumn"
-                         XAxisName="xAxis"
-                         YAxisName="yAxis">
-            </IgbSplineSeries>
-        }
-
-        @if (SeriesType == "Spline Area")
-        {
-            <IgbSplineAreaSeries Name="series1"
+            @if (SeriesType == "Column")
+            {
+                <IgbColumnSeries Name="series1"
                              ValueMemberPath="@YColumn"
                              Title="@YColumn"
                              XAxisName="xAxis"
                              YAxisName="yAxis">
-            </IgbSplineAreaSeries>
-        }
+                </IgbColumnSeries>
+            }
 
-        @if (SeriesType == "Step Area")
-        {
-            <IgbStepAreaSeries Name="series1"
+            @if (SeriesType == "Line")
+            {
+                <IgbLineSeries Name="series1"
                            ValueMemberPath="@YColumn"
                            Title="@YColumn"
                            XAxisName="xAxis"
                            YAxisName="yAxis">
-            </IgbStepAreaSeries>
-        }
+                </IgbLineSeries>
+            }
 
-        @if (SeriesType == "Step Line")
-        {
-            <IgbStepLineSeries Name="series1"
+            @if (SeriesType == "Area")
+            {
+                <IgbAreaSeries Name="series1"
                            ValueMemberPath="@YColumn"
                            Title="@YColumn"
                            XAxisName="xAxis"
                            YAxisName="yAxis">
-            </IgbStepLineSeries>
-        }
+                </IgbAreaSeries>
+            }
 
-        @if (SeriesType == "Waterfall")
-        {
-            <IgbWaterfallSeries Name="series1"
+            @if (SeriesType == "Point")
+            {
+                <IgbPointSeries Name="series1"
                             ValueMemberPath="@YColumn"
                             Title="@YColumn"
                             XAxisName="xAxis"
                             YAxisName="yAxis">
-            </IgbWaterfallSeries>
-        }
+                </IgbPointSeries>
+            }
 
-    </IgbDataChart>
+            @if (SeriesType == "Spline")
+            {
+                <IgbSplineSeries Name="series1"
+                             ValueMemberPath="@YColumn"
+                             Title="@YColumn"
+                             XAxisName="xAxis"
+                             YAxisName="yAxis">
+                </IgbSplineSeries>
+            }
+
+            @if (SeriesType == "Spline Area")
+            {
+                <IgbSplineAreaSeries Name="series1"
+                                 ValueMemberPath="@YColumn"
+                                 Title="@YColumn"
+                                 XAxisName="xAxis"
+                                 YAxisName="yAxis">
+                </IgbSplineAreaSeries>
+            }
+
+            @if (SeriesType == "Step Area")
+            {
+                <IgbStepAreaSeries Name="series1"
+                               ValueMemberPath="@YColumn"
+                               Title="@YColumn"
+                               XAxisName="xAxis"
+                               YAxisName="yAxis">
+                </IgbStepAreaSeries>
+            }
+
+            @if (SeriesType == "Step Line")
+            {
+                <IgbStepLineSeries Name="series1"
+                               ValueMemberPath="@YColumn"
+                               Title="@YColumn"
+                               XAxisName="xAxis"
+                               YAxisName="yAxis">
+                </IgbStepLineSeries>
+            }
+
+            @if (SeriesType == "Waterfall")
+            {
+                <IgbWaterfallSeries Name="series1"
+                                ValueMemberPath="@YColumn"
+                                Title="@YColumn"
+                                XAxisName="xAxis"
+                                YAxisName="yAxis">
+                </IgbWaterfallSeries>
+            }
+
+        </IgbDataChart>
+
+    </div>
 
 </div>
 
 @if (DataTable == null)
 {
     <div class="overlay">
-        <span class="overlayTitle">
+        <span class="overlay-title">
             データを選択してください
         </span>
     </div>
@@ -156,6 +165,19 @@
     private List<string> ColumnsY = new List<string>();
 
     private List<string> ColumnsX = new List<string>();
+
+    private static readonly IEnumerable<string> SeriesTypes = new[]
+    {
+        "Column",
+        "Area",
+        "Point",
+        "Line",
+        "Spline",
+        "Spline",
+        "Step",
+        "Step",
+        "Waterfall"
+    };
 
     private string SeriesType = "Column";
 
@@ -247,9 +269,9 @@
         this.StateHasChanged();
     }
 
-    public async Task OnSeriesTypeChanged(ChangeEventArgs e)
+    public async Task OnSeriesTypeChanged(IgbDropdownItemComponentEventArgs e)
     {
-        this.SeriesType = e.Value?.ToString() ?? "Column";
+        this.SeriesType = e.Detail.Value;
         await SetupDataChartAsync();
     }
 

@@ -1,25 +1,32 @@
-﻿.dataChartStyle {
-
-    height : 600px;
-}
-.overlay {
-    position: absolute;
-    left: 0;
-    top: 0;
+﻿.chart-view {
     width: 100%;
     height: 100%;
-    background: gray;
-    opacity: 0.7;
-    z-index: 2147483647;
+    display: flex;
+    flex-direction: column;
 }
 
-.overlayTitle {
-    opacity: 1;
-    color: black;
-    font-size: xx-large;
-    background: white;
+.control-bar {
+    padding: 6px 10px;
     display: flex;
-    justify-content: center;
     align-items: center;
-    height: 100%;
+    font-size: 14px;
+}
+
+.options-label {
+    margin-right: 4px;
+}
+
+.legend-title {
+    margin-left: 14px;
+    margin-right: 4px;
+}
+
+::deep igc-button::part(base) {
+    color: #fff;
+    background-color: hsla(var(--igc-primary-500), var(--igc-primary-a));
+    text-transform: none;
+}
+
+.data-chart-area {
+    flex: 1;
 }

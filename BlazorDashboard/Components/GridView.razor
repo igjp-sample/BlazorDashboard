@@ -2,7 +2,7 @@
 @implements IAsyncDisposable
 @inject IJSRuntime JS;
 
-<div @ref="DataGridContainerRef" class="dataGridStyle">
+<div @ref="DataGridContainerRef" class="data-grid-area">
     <IgbDataGrid Height="100%"
                  Width="100%"
                  AutoGenerateColumns="true">
@@ -12,7 +12,7 @@
 @if (GridDataTable == null)
 {
     <div class="overlay">
-        <span class="overlayTitle">
+        <span class="overlay-title">
             データを選択してください
         </span>
     </div>
