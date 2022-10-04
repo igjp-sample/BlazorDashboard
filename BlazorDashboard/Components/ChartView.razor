@@ -1,12 +1,10 @@
-﻿@using BlazorDashboard.Services
-@using IgniteUI.Blazor.Controls
-@using System.Data
-@using Newtonsoft.Json
+﻿@using System.Data
+@using BlazorDashboard.Services
+@implements IAsyncDisposable
 @inject IIgniteUIBlazor IgniteUIBlazor
-@inject IJSRuntime JS;
+@inject IJSRuntime JS
 
-
-<div >
+<div>
     <label class="options-label">Category Type: </label>
     <select value=@SeriesType @onchange="OnSeriesTypeChanged">
         <option>Column</option>
@@ -27,6 +25,7 @@
             <option>@column</option>
         }
     </select>
+
     <span class="legend-title">Y軸: </span>
     <select @bind="YColumn">
         @foreach (var column in ColumnsY)
@@ -36,114 +35,111 @@
     </select>
 </div>
 
-<div class="dataChartStyle">
+<div @ref="DataChartContainerRef" class="dataChartStyle">
 
     <IgbDataChart Height="100%" Width="100%"
-                TitleTopMargin="10"
-                IsHorizontalZoomEnabled="true"
-                IsVerticalZoomEnabled="true"
-                @ref="Chart">
+                  TitleTopMargin="10"
+                  IsHorizontalZoomEnabled="true"
+                  IsVerticalZoomEnabled="true">
 
-            <IgbCategoryXAxis Name="xAxis" Label="@XColumn"Title="@XColumn"  />
-            <IgbNumericYAxis Name="yAxis" Title="@YColumn" TitleLeftMargin="10" MinimumValue="0"/>
+        <IgbCategoryXAxis Name="xAxis" Label="@XColumn" Title="@XColumn" />
+        <IgbNumericYAxis Name="yAxis" Title="@YColumn" TitleLeftMargin="10" MinimumValue="0" />
 
         @if (SeriesType == "Column")
         {
             <IgbColumnSeries Name="series1"
-                            ValueMemberPath="@YColumn"
-                            Title="@YColumn"
-                            XAxisName="xAxis"
-                            YAxisName="yAxis">
+                         ValueMemberPath="@YColumn"
+                         Title="@YColumn"
+                         XAxisName="xAxis"
+                         YAxisName="yAxis">
             </IgbColumnSeries>
         }
 
         @if (SeriesType == "Line")
         {
             <IgbLineSeries Name="series1"
-                        ValueMemberPath="@YColumn"
-                        Title="@YColumn"
-                        XAxisName="xAxis"
-                        YAxisName="yAxis">
+                       ValueMemberPath="@YColumn"
+                       Title="@YColumn"
+                       XAxisName="xAxis"
+                       YAxisName="yAxis">
             </IgbLineSeries>
         }
 
         @if (SeriesType == "Area")
         {
             <IgbAreaSeries Name="series1"
-                        ValueMemberPath="@YColumn"
-                        Title="@YColumn"
-                        XAxisName="xAxis"
-                        YAxisName="yAxis">
+                       ValueMemberPath="@YColumn"
+                       Title="@YColumn"
+                       XAxisName="xAxis"
+                       YAxisName="yAxis">
             </IgbAreaSeries>
         }
 
         @if (SeriesType == "Point")
         {
             <IgbPointSeries Name="series1"
-                            ValueMemberPath="@YColumn"
-                            Title="@YColumn"
-                            XAxisName="xAxis"
-                            YAxisName="yAxis">
+                        ValueMemberPath="@YColumn"
+                        Title="@YColumn"
+                        XAxisName="xAxis"
+                        YAxisName="yAxis">
             </IgbPointSeries>
         }
 
-            @if (SeriesType == "Spline")
+        @if (SeriesType == "Spline")
         {
             <IgbSplineSeries Name="series1"
-                            ValueMemberPath="@YColumn"
-                            Title="@YColumn"
-                            XAxisName="xAxis"
-                            YAxisName="yAxis">
+                         ValueMemberPath="@YColumn"
+                         Title="@YColumn"
+                         XAxisName="xAxis"
+                         YAxisName="yAxis">
             </IgbSplineSeries>
         }
 
         @if (SeriesType == "Spline Area")
         {
             <IgbSplineAreaSeries Name="series1"
-                                ValueMemberPath="@YColumn"
-                                Title="@YColumn"
-                                XAxisName="xAxis"
-                                YAxisName="yAxis">
+                             ValueMemberPath="@YColumn"
+                             Title="@YColumn"
+                             XAxisName="xAxis"
+                             YAxisName="yAxis">
             </IgbSplineAreaSeries>
         }
 
         @if (SeriesType == "Step Area")
         {
             <IgbStepAreaSeries Name="series1"
-                            ValueMemberPath="@YColumn"
-                            Title="@YColumn"
-                            XAxisName="xAxis"
-                            YAxisName="yAxis">
+                           ValueMemberPath="@YColumn"
+                           Title="@YColumn"
+                           XAxisName="xAxis"
+                           YAxisName="yAxis">
             </IgbStepAreaSeries>
         }
 
         @if (SeriesType == "Step Line")
         {
             <IgbStepLineSeries Name="series1"
-                            ValueMemberPath="@YColumn"
-                            Title="@YColumn"
-                            XAxisName="xAxis"
-                            YAxisName="yAxis">
+                           ValueMemberPath="@YColumn"
+                           Title="@YColumn"
+                           XAxisName="xAxis"
+                           YAxisName="yAxis">
             </IgbStepLineSeries>
         }
 
         @if (SeriesType == "Waterfall")
         {
             <IgbWaterfallSeries Name="series1"
-                                ValueMemberPath="@YColumn"
-                                Title="@YColumn"
-                                XAxisName="xAxis"
-                                YAxisName="yAxis">
+                            ValueMemberPath="@YColumn"
+                            Title="@YColumn"
+                            XAxisName="xAxis"
+                            YAxisName="yAxis">
             </IgbWaterfallSeries>
         }
-
 
     </IgbDataChart>
 
 </div>
 
-
-@if(DataTable == null)
+@if (DataTable == null)
 {
     <div class="overlay">
         <span class="overlayTitle">
@@ -152,133 +148,24 @@
     </div>
 }
 
-
 @code {
 
-
-    private DataTable? _DataTable;
-
     [Parameter]
-    public DataTable? DataTable
-    {
-        get
-        {
-            return _DataTable;
-        }
-        set
-        {
-            _DataTable = value;
-            settingData();
-        }
-    }
+    public DataTable? DataTable { get; set; }
 
     private List<string> ColumnsY = new List<string>();
+
     private List<string> ColumnsX = new List<string>();
 
-    private IgbDataChart _Chart;
-    private IgbDataChart Chart
-    {
-        get { return _Chart; }
-        set
-        {
-            _Chart = value;
-            StateHasChanged();
-        }
-    }
+    private string SeriesType = "Column";
 
+    private string? XColumn;
 
-    private string seriesType;
-    private string SeriesType
-    {
-        get { return seriesType; }
-        set
-        {
-            seriesType = value;
-            StateHasChanged();
-        }
-    }
+    private string? YColumn;
 
-    private string xColumn;
-    private string XColumn
-    {
-        get { return xColumn; }
-        set
-        {
-            xColumn = value;
-            StateHasChanged();
-        }
-    }
+    private IJSObjectReference? JSModule;
 
-    private string yColumn;
-    private string YColumn
-    {
-        get { return yColumn; }
-        set
-        {
-            yColumn = value;
-            StateHasChanged();
-        }
-    }
-
-
-    private void settingData() { 
-        if(DataTable != null)
-        {
-
-            List<string> newColumnsY = new List<string>();
-            foreach(DataColumn column in DataTable.Columns)
-            {
-                if(column.DataType == typeof(int)
-                    || column.DataType == typeof(double)
-                    || column.DataType == typeof(decimal))
-                {
-                    newColumnsY.Add(column.ColumnName);
-                }   
-            }
-
-            List<string> newColumnsX = new List<string>();
-            foreach(DataColumn column in DataTable.Columns)
-            {
-                newColumnsX.Add(column.ColumnName);
-            }
-
-            this.ColumnsY = newColumnsY;
-            this.ColumnsX = newColumnsX;
-            if(string.IsNullOrEmpty(this.XColumn)){
-                if (newColumnsX.Count > 0)
-                {
-                    this.XColumn = newColumnsX[0];
-                }
-            }
-
-            if (string.IsNullOrEmpty(this.YColumn))
-            {
-                if(newColumnsY.Count > 0)
-                {
-                    if(newColumnsY[0] == newColumnsX[0]
-                        && newColumnsY.Count > 1)
-                    {
-                        this.YColumn = newColumnsY[1];
-                    }
-                    else
-                    {
-                        this.YColumn = newColumnsY[0];
-                    }
-                }
-            }
-            if (string.IsNullOrEmpty(SeriesType))
-            {
-                SeriesType = "";
-                StateHasChanged();
-                SeriesType = "Column";
-            }
-            
-            var jsonData = JsonConvert.SerializeObject(DataTable);
-            JS.InvokeVoidAsync("settingDataSourceOfDataChart", jsonData);
-
-            StateHasChanged();
-        }
-    }
+    private ElementReference DataChartContainerRef;
 
     protected override void OnInitialized()
     {
@@ -287,14 +174,96 @@
         IgbDataChartCategoryModule.Register(IgniteUIBlazor);
         IgbDataChartVerticalCategoryModule.Register(IgniteUIBlazor);
         IgbDataChartInteractivityModule.Register(IgniteUIBlazor);
-
         IgbLegendModule.Register(IgniteUIBlazor);
     }
 
-    public void OnSeriesTypeChanged(ChangeEventArgs e)
+    public override async Task SetParametersAsync(ParameterView parameters)
     {
-        var selectedSeries = e.Value.ToString();
-        SeriesType = selectedSeries;
-        settingData();
+        var prevDataTable = this.DataTable;
+        await base.SetParametersAsync(parameters);
+        if (!object.ReferenceEquals(prevDataTable, this.DataTable))
+        {
+            await this.SetupDataChartAsync();
+        }
+    }
+
+    private async ValueTask SetupDataChartAsync()
+    {
+        if (this.DataTable == null) return;
+
+        var newColumnsY = new List<string>();
+        foreach (DataColumn column in this.DataTable.Columns)
+        {
+            if (column.DataType == typeof(int)
+                || column.DataType == typeof(double)
+                || column.DataType == typeof(decimal))
+            {
+                newColumnsY.Add(column.ColumnName);
+            }
+        }
+
+        var newColumnsX = new List<string>();
+        foreach (DataColumn column in this.DataTable.Columns)
+        {
+            newColumnsX.Add(column.ColumnName);
+        }
+
+        this.ColumnsY = newColumnsY;
+        this.ColumnsX = newColumnsX;
+        if (string.IsNullOrEmpty(this.XColumn))
+        {
+            if (newColumnsX.Count > 0)
+            {
+                this.XColumn = newColumnsX[0];
+            }
+        }
+
+        if (string.IsNullOrEmpty(this.YColumn))
+        {
+            if (newColumnsY.Count > 0)
+            {
+                if (newColumnsY[0] == newColumnsX[0]
+                    && newColumnsY.Count > 1)
+                {
+                    this.YColumn = newColumnsY[1];
+                }
+                else
+                {
+                    this.YColumn = newColumnsY[0];
+                }
+            }
+        }
+
+        if (string.IsNullOrEmpty(SeriesType))
+        {
+            this.SeriesType = "Column";
+            this.StateHasChanged();
+        }
+
+        var jsonData = JsonSerializer.Serialize(this.DataTable.AsDictionaryEnumerable());
+        var module = await this.GetJsModuleAsync();
+        await module.InvokeVoidAsync("setDataSource", this.DataChartContainerRef, jsonData);
+
+        this.StateHasChanged();
+    }
+
+    public async Task OnSeriesTypeChanged(ChangeEventArgs e)
+    {
+        this.SeriesType = e.Value?.ToString() ?? "Column";
+        await SetupDataChartAsync();
+    }
+
+    private async ValueTask<IJSObjectReference> GetJsModuleAsync()
+    {
+        if (this.JSModule == null)
+        {
+            this.JSModule = await this.JS.InvokeAsync<IJSObjectReference>("import", "./Components/ChartView.razor.js");
+        }
+        return this.JSModule;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (this.JSModule != null) await this.JSModule.DisposeAsync();
     }
 }
