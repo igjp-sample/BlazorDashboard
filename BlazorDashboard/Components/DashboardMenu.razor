@@ -6,27 +6,35 @@
 @using Toolbelt.Blazor.FileDropZone
 @implements IAsyncDisposable
 @inject IJSRuntime JS
+@inject HttpClient HttpClient
 @inject DashboardService DashboardService
 
 <div class="dashboard-menu-container">
 
     <FileDropZone class="drop-zone">
 
-        <div @ref="FileSelectorRef" class="fileUploadRegion">
-            <InputFile OnChange="@LoadFiles" style="display:none;" />
-            <IgbButton Class="file-selector-button" Variant="ButtonVariant.Contained" @onclick="OnClickSelectFile">
-                ファイル選択
-            </IgbButton>
+        <div @ref="FileSelectorRef" class="file-upload-region">
+            <InputFile OnChange="@OnInputFileChanged" style="display:none;" />
+            <p>
+                <IgbButton Class="file-selector-button" @onclick="OnClickSelectFile">
+                    .xlsx ファイル選択
+                </IgbButton>
+            </p>
+            <p>
+                <IgbButton Class="load-sample-button" @onclick="OnClickLoadSampleFile">
+                    内蔵のサンプルデータで表示
+                </IgbButton>
+            </p>
             <p class="guide-message">又はここにファイルをドラッグ & ドロップ</p>
         </div>
 
-        <ul class="dashboardList">
+        <ul class="dashboard-list">
             @if (this.Items != null)
             {
                 foreach (var item in this.Items)
                 {
-                    <li @key="item.ID" class="dashboardItem @(ActiveItem == item ? "dashboardItemActive" : "")" @onclick="(s => OnItemSelected(item))">
-                        @item.Title
+                    <li @key="item.ID" class="dashboard-item @(ActiveItem == item ? "dashboard-item-active" : "")" @onclick="(s => OnItemSelected(item))">
+                        <span class="material-icons">description</span>@item.Title
                     </li>
                 }
             }
@@ -34,8 +42,8 @@
 
         @if (this.IsLoading == true)
         {
-            <div class="progressStyle">
-                <p class="progressMessage">
+            <div class="progress-style">
+                <p class="progress-message">
                     データを設定中です
                 </p>
                 <IgbLinearProgress Variant="ProgressBaseVariant.Primary" Indeterminate="true" />
@@ -85,13 +93,41 @@
         await module.InvokeVoidAsync("onClickSelectFile", FileSelectorRef);
     }
 
+    private async Task OnClickLoadSampleFile()
+    {
+        async IAsyncEnumerable<(string, byte[])> sampleFileLoader()
+        {
+            var sampleFileytes = await this.HttpClient.GetByteArrayAsync("./sample-data.xlsx");
+            yield return ("sample-data.xlsx", sampleFileytes);
+        };
+
+        await this.LoadDashboardItemsAsync(sampleFileLoader());
+    }
+
     private void OnItemSelected(DashboardItem item)
     {
         this.OnSelectedItemCallback.InvokeAsync(new(item));
         this.ActiveItem = item;
     }
 
-    private async Task LoadFiles(InputFileChangeEventArgs e)
+    private async Task OnInputFileChanged(InputFileChangeEventArgs args)
+    {
+        async IAsyncEnumerable<(string, byte[])> selectedFileLoader()
+        {
+            foreach (var file in args.GetMultipleFiles(MaxAllowedFiles))
+            {
+                var buffers = new byte[file.Size];
+                await file.OpenReadStream().ReadAsync(buffers);
+                yield return (file.Name, buffers);
+                this.StateHasChanged();
+                await Task.Delay(200);
+            }
+        };
+
+        await this.LoadDashboardItemsAsync(selectedFileLoader());
+    }
+
+    private async Task LoadDashboardItemsAsync(IAsyncEnumerable<(string Name, byte[] Contents)> contents)
     {
         this.IsLoading = true;
         this.StateHasChanged();
@@ -99,22 +135,12 @@
 
         try
         {
-            foreach (var file in e.GetMultipleFiles(MaxAllowedFiles))
+            await foreach (var (name, bytes) in contents)
             {
-                try
-                {
-                    var buffers = new byte[file.Size];
-                    await file.OpenReadStream().ReadAsync(buffers);
-                    DashboardService.AddDashboardItem(file.Name, buffers);
-                    this.StateHasChanged();
-                    await Task.Delay(200);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.StackTrace);
-                }
+                this.DashboardService.AddDashboardItem(name, bytes);
             }
         }
+        catch (Exception e) { Console.WriteLine(e.ToString()); }
         finally
         {
             this.IsLoading = false;
@@ -124,6 +150,7 @@
             }
             this.StateHasChanged();
         }
+
     }
 
     public async ValueTask DisposeAsync()

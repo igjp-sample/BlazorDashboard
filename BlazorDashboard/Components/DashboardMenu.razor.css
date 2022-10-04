@@ -1,6 +1,15 @@
-﻿::deep igc-button.file-selector-button::part(base) {
-    color: #fff;
+﻿::deep igc-button {
+    width: 100%;
+    min-width: 220px;
 }
+
+    ::deep igc-button::part(base) {
+        color: #fff;
+    }
+
+    ::deep igc-button.load-sample-button::part(base) {
+        background-color: hsla(var(--igc-primary-500), var(--igc-primary-a));
+    }
 
 .dashboard-menu-container {
     position: absolute;
@@ -10,39 +19,50 @@
     right: 0;
 }
 
-.progressMessage {
-}
-
-.progressStyle {
+.progress-style {
     padding-left: 12px;
     padding-right: 12px;
     padding-bottom: 12px;
 }
 
-.dashboardList {
+.progress-message {
+}
+
+.dashboard-list {
     padding: 0;
 }
 
-.dashboardItem {
+.dashboard-item {
     padding: 12px;
     list-style-type: none !important;
     color: #2b2c34;
     margin: 3px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition:background-color ease 0.2s;
 }
 
-    .dashboardItem:hover {
-        background: #d1d1e9 !important;
-        cursor: pointer;
+    .dashboard-item .material-icons {
+        color: darkgreen;
+        margin-right: 4px;
     }
 
-.dashboardItemActive {
+.dashboard-item:hover {
+    background: #e3e3f0;
+    cursor: pointer;
+}
+
+.dashboard-item-active {
     background: #d1d1e9 !important;
 }
 
-.fileUploadRegion {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    padding-left: 12px;
+.file-upload-region {
+    padding: 0 12px;
+    text-align:center;
 }
 
 .guide-message {
@@ -59,11 +79,11 @@
     left: 0;
     bottom: 0;
     right: 0;
-    border: dashed 2px transparent;
+    border: dashed 4px transparent;
     transition: border linear 0.2s;
 }
 
     /* hover CSS クラスが付いたら、オレンジ色の破線の枠を表示するよう定義 */
     ::deep .drop-zone.hover {
-        border: dashed 2px darkorange;
+        border: dashed 4px darkorange;
     }
