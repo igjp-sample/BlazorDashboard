@@ -1,12 +1,4 @@
-﻿
-// データグリッドの設定
-window.settingDataGrid = (jsonData) => {
-    var dataGrid = document.getElementsByTagName('igc-data-grid')[0];
-    var json = JSON.parse(jsonData);
-    dataGrid.dataSource = json;
-};
-
-window.settingDataSourceOfDataChart = (jsonData) => {
+﻿window.settingDataSourceOfDataChart = (jsonData) => {
     var json = JSON.parse(jsonData);
 
     var dataChart = document.getElementsByTagName('igc-data-chart')[0];
