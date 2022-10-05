@@ -42,11 +42,7 @@
 
     private async ValueTask<IJSObjectReference> GetJsModuleAsync()
     {
-        if (this.JSModule == null)
-        {
-            this.JSModule = await this.JS.InvokeAsync<IJSObjectReference>("import", "./Components/GridView.razor.js");
-        }
-        return this.JSModule;
+        return this.JSModule ??= await this.JS.InvokeAsync<IJSObjectReference>("import", "./Components/GridView.razor.js");
     }
 
     public async ValueTask DisposeAsync()

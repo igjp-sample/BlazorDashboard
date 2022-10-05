@@ -277,11 +277,7 @@
 
     private async ValueTask<IJSObjectReference> GetJsModuleAsync()
     {
-        if (this.JSModule == null)
-        {
-            this.JSModule = await this.JS.InvokeAsync<IJSObjectReference>("import", "./Components/ChartView.razor.js");
-        }
-        return this.JSModule;
+        return this.JSModule ??= await this.JS.InvokeAsync<IJSObjectReference>("import", "./Components/ChartView.razor.js");
     }
 
     public async ValueTask DisposeAsync()
