@@ -10,11 +10,27 @@
 
 <PageTitle>Blazor Dashboard</PageTitle>
 
-<div>
+<Header OnClickAddComponent="OnClickAddComponent" />
+
+<div class="page-main">
     <IgbDockManager id="dockmanager1" Layout="this._InitialLayout">
-        <div slot="content1" class="dockManagerContent"><DashboardMenu OnSelectedItemCallback="OnSelectedDashboard"></DashboardMenu></div>
-        <div slot="content2" class="dockManagerContent"><GridView GridDataTable="@SelectedDataTable"></GridView></div>
-        <div slot="content3" class="dockManagerContent"><ChartView DataTable="@SelectedDataTable"></ChartView></div>
+        @foreach (var component in this.Components)
+        {
+            <div @key="component.Id" slot="@component.Id" class="dockmanager-content">
+                @if (component.ComponentName == nameof(DashboardMenu))
+                {
+                    <DashboardMenu OnSelectedItemCallback="OnSelectedDashboard"></DashboardMenu>
+                }
+                @if (component.ComponentName == nameof(GridView))
+                {
+                    <GridView GridDataTable="@SelectedDataTable"></GridView>
+                }
+                @if (component.ComponentName == nameof(ChartView))
+                {
+                    <ChartView DataTable="@SelectedDataTable"></ChartView>
+                }
+            </div>
+        }
     </IgbDockManager>
 </div>
 
@@ -26,6 +42,23 @@
     /// 最後に購読破棄するために、ドックマネージャーのイベント購読を保持するリスト
     /// </summary>
     private readonly List<IAsyncDisposable> _Subscriptions = new();
+
+    public record ComponentDescriptor(string Id, string HeaderText, string ComponentName);
+
+    /// <summary>
+    /// "画面上にどのコンポーネントが表示されているか" を保持するリスト
+    /// </summary>
+    private readonly List<ComponentDescriptor> Components = new();
+
+    /// <summary>
+    /// 初期リスト
+    /// </summary>
+    private readonly IEnumerable<ComponentDescriptor> _InitialComponents = new ComponentDescriptor[]
+    {
+        new(Id:"content1", "データソース", ComponentName:nameof(DashboardMenu)),
+        new(Id:"content2", "データグリッド", ComponentName:nameof(GridView)),
+        new(Id:"content3", "チャート", ComponentName:nameof(ChartView)),
+    };
 
 #pragma warning disable BL0005
     /// <summary>
@@ -89,13 +122,46 @@
     {
         if (firstRender)
         {
+            // ブラウザのローカルストレージに JSON 形式で保存しておいた表示コンポーネントの情報を、逆シリアル化して復元
+            var components = await this.LocalStorage.GetItemAsync<ComponentDescriptor[]>("components");
+            this.Components.AddRange(components ?? _InitialComponents);
+            this.StateHasChanged();
+
             // ブラウザのローカルストレージに保存しておいたドックマネージャーのレイアウト情報から、レイアウトを復元
             var layout = await this.LocalStorage.GetItemAsStringAsync("layout");
             if (!string.IsNullOrEmpty(layout)) await this.Helper.RestoreLayoutAsync("#dockmanager1", layout);
 
             // ドックマネージャーが発行するイベントを購読
             this._Subscriptions.Add(await this.Helper.SubscribeLayoutChangeEventAsync("#dockmanager1", OnLayoutChange));
+            this._Subscriptions.Add(await this.Helper.SubscribePaneCloseEventAsync("#dockmanager1", OnPaneClose));
         }
+    }
+
+    private async Task OnClickAddComponent(string componentName)
+    {
+        var id = Guid.NewGuid().ToString();
+        var descriptor = componentName switch
+        {
+            nameof(DashboardMenu) => new ComponentDescriptor(id, "データソース", componentName),
+            nameof(GridView) => new ComponentDescriptor(id, "データグリッド", componentName),
+            nameof(ChartView) => new ComponentDescriptor(id, "チャート", componentName),
+            _ => throw new Exception()
+        };
+        await this.AddComponentAsync(descriptor);
+    }
+
+    /// <summary>
+    /// 表示コンポーネントの追加処理を集約します。
+    /// </summary>
+    private async ValueTask AddComponentAsync(ComponentDescriptor descriptor)
+    {
+        this.Components.Add(descriptor);
+
+        // ドックマネージャーに、追加した表示コンポーネントを取り付け
+        await this.Helper.AttachContentPaneAsync("#dockmanager1", descriptor.Id, descriptor.HeaderText);
+
+        // 表示コンポーネントの情報を、ブラウザのローカルストレージに保存
+        await this.LocalStorage.SetItemAsync("components", this.Components);
     }
 
     /// <summary>
@@ -105,6 +171,21 @@
     {
         if (layout == null) return;
         await this.LocalStorage.SetItemAsStringAsync("layout", layout);
+    }
+
+    /// <summary>
+    /// ドックマネージャーのペインが閉じられたときに呼び出され、閉じられたペインに表示していた表示コンポーネントを削除し、ブラウザのローカルストレージに保存します。
+    /// </summary>
+    private async ValueTask OnPaneClose(string[]? closedPaneIds)
+    {
+        var componentsToRemove = (closedPaneIds ?? Array.Empty<string>())
+            .Select(paneId => this.Components.Find(descriptor => descriptor.Id == paneId))
+            .Where(descriptor => descriptor != null)
+            .ToArray();
+        foreach (var descriptor in componentsToRemove) { this.Components.Remove(descriptor!); }
+
+        await LocalStorage.SetItemAsync("components", this.Components);
+        this.StateHasChanged();
     }
 
     /// <summary>

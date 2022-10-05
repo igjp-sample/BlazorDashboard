@@ -1,9 +1,13 @@
-﻿::deep #dockmanager1 {
-    width: 100%;
-    height: calc(100vh - 78px);
+﻿.page-main {
+    flex: 1;
 }
 
-.dockManagerContent {
+::deep #dockmanager1 {
+    width: 100%;
+    height: 100%;
+}
+
+.dockmanager-content {
     position: absolute;
     top: 40px;
     bottom: 0;

@@ -1,13 +1,33 @@
-﻿<div class="pageHeader">
+﻿<div class="page-header">
 
-    <div class="pageTitle">
+    <div class="page-title">
         Blazor Dashboard
     </div>
 
-    <div class="pageMenu">
+    <div class="actions">
+        <IgbDropdown>
+            <IgbButton slot="target"><span class="material-icons">add</span> 表示の追加 <span class="material-icons">more_vert</span></IgbButton>
+            <IgbDropdownItem @onclick="@(() => OnClickAddComponent.InvokeAsync(nameof(DashboardMenu)))" Active="false" Selected="false" >
+                <span class="material-icons">description</span> データソース
+            </IgbDropdownItem>
+            <IgbDropdownItem @onclick="@(() => OnClickAddComponent.InvokeAsync(nameof(GridView)))" Active="false" Selected="false">
+                <span class="material-icons">view_list</span> データグリッド
+            </IgbDropdownItem>
+            <IgbDropdownItem @onclick="@(() => OnClickAddComponent.InvokeAsync(nameof(ChartView)))" Active="false" Selected="false">
+                <span class="material-icons">bar_chart</span> チャート
+            </IgbDropdownItem>
+        </IgbDropdown>
+    </div>
+
+    <div class="appendix-link">
         <a href="https://jp.infragistics.com/products/ignite-ui-blazor" target="_blank">
             <span class="material-icons">sms</span>
         </a>
     </div>
 
 </div>
+
+@code {
+    [Parameter]
+    public EventCallback<string> OnClickAddComponent { get; set; }
+}

@@ -1,21 +1,19 @@
-﻿.pageHeader {
+﻿.page-header {
     height: 54px;
     display: flex;
+    align-items: center;
 }
 
-.pageTitle {
-    padding-left: 12px;
-    padding-top: 8px;
+.page-title {
     font-size: xx-large;
+    flex: 1;
 }
 
-.pageMenu {
-    margin-left: auto;
-    padding-right: 12px;
-    padding-top: 12px;
+.appendix-link {
+    margin-left: 12px;
 }
 
-    .pageMenu a {
+    .appendix-link a {
         color: #fff;
         width: 36px;
         height: 36px;
@@ -25,4 +23,31 @@
         align-items: center;
         justify-content: space-around;
         text-decoration: none;
+    }
+
+::deep igc-button::part(base) {
+    color: #fff;
+    background-color: hsla(var(--igc-primary-500), var(--igc-primary-a));
+}
+
+::deep igc-dropdown-item {
+    transition: background-color ease 0.2s;
+}
+
+    ::deep igc-dropdown-item[active],
+    ::deep igc-dropdown-item[selected] {
+        background: unset;
+    }
+
+        ::deep igc-dropdown-item[active]:hover,
+        ::deep igc-dropdown-item[selected]:hover {
+            background-color: hsla(var(--igc-gray-200), var(--igc-gray-a));
+        }
+
+    ::deep igc-dropdown-item .material-icons {
+        margin-right: 4px;
+    }
+
+    ::deep igc-dropdown-item::part(content) {
+        display: flex;
     }
