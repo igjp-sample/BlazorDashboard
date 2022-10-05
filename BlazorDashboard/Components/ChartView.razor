@@ -8,33 +8,33 @@
 
     <div class="control-bar">
         <label class="options-label">Category Type: </label>
-        <IgbDropdown Change="OnSeriesTypeChanged">
+        <IgbDropdown>
             <IgbButton slot="target">@SeriesType <span class="material-icons">expand_more</span></IgbButton>
             @foreach (var type in SeriesTypes)
             {
-                <IgbDropdownItem Selected="@(this.SeriesType == type)" Value="@type">
+                <IgbDropdownItem Selected="@(this.SeriesType == type)" @onclick="@(() => this.OnSeriesTypeChanged(type))">
                     @type
                 </IgbDropdownItem>
             }
         </IgbDropdown>
 
         <span class="legend-title">X軸: </span>
-        <IgbDropdown Change="@(e => this.XColumn = e.Detail.Value)">
+        <IgbDropdown>
             <IgbButton slot="target">@XColumn <span class="material-icons">expand_more</span></IgbButton>
             @foreach (var column in ColumnsX)
             {
-                <IgbDropdownItem Selected="@(this.XColumn == column)" Value="@column">
+                <IgbDropdownItem Selected="@(this.XColumn == column)" @onclick="@(() => this.XColumn = column)">
                     @column
                 </IgbDropdownItem>
             }
         </IgbDropdown>
 
         <span class="legend-title">Y軸: </span>
-        <IgbDropdown Change="@(e => this.YColumn = e.Detail.Value)">
+        <IgbDropdown>
             <IgbButton slot="target">@YColumn <span class="material-icons">expand_more</span></IgbButton>
             @foreach (var column in ColumnsY)
             {
-                <IgbDropdownItem Selected="@(this.YColumn == column)" Value="@column">
+                <IgbDropdownItem Selected="@(this.YColumn == column)" @onclick="@(() => this.YColumn = column)">
                     @column
                 </IgbDropdownItem>
             }
@@ -269,9 +269,9 @@
         this.StateHasChanged();
     }
 
-    public async Task OnSeriesTypeChanged(IgbDropdownItemComponentEventArgs e)
+    public async Task OnSeriesTypeChanged(string type)
     {
-        this.SeriesType = e.Detail.Value;
+        this.SeriesType = type;
         await SetupDataChartAsync();
     }
 
