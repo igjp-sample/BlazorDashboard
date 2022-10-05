@@ -13,49 +13,52 @@
 
     <FileDropZone class="drop-zone">
 
-        <div @ref="FileSelectorRef" class="file-upload-region">
-            <InputFile OnChange="@OnInputFileChanged" style="display:none;" />
-            <p>
-                <IgbButton Class="file-selector-button" @onclick="OnClickSelectFile">
-                    .xlsx ファイル選択
-                </IgbButton>
-            </p>
+        <div class="scroll-window">
 
-            <div class="divider"></div>
-
-            <p>
-                <IgbButton Class="load-sample-button" @onclick="OnClickLoadSampleFile">
-                    内蔵のサンプルデータで表示
-                </IgbButton>
-            </p>
-
-            <div class="divider"></div>
-
-            <p class="guide-message">ここにファイルをドラッグ & ドロップ</p>
-        </div>
-
-        <ul class="dashboard-list">
-            @if (this.Items != null)
-            {
-                foreach (var item in this.Items)
-                {
-                    <li @key="item.ID" class="dashboard-item @(ActiveItem == item ? "dashboard-item-active" : "")" @onclick="(s => OnItemSelected(item))">
-                        <span class="material-icons">description</span>@item.Title
-                    </li>
-                }
-            }
-        </ul>
-
-        @if (this.IsLoading == true)
-        {
-            <div class="progress-style">
-                <p class="progress-message">
-                    データを設定中です
+            <div @ref="FileSelectorRef" class="file-upload-region">
+                <InputFile OnChange="@OnInputFileChanged" style="display:none;" />
+                <p>
+                    <IgbButton Class="file-selector-button" @onclick="OnClickSelectFile">
+                        .xlsx ファイル選択
+                    </IgbButton>
                 </p>
-                <IgbLinearProgress Variant="ProgressBaseVariant.Primary" Indeterminate="true" />
-            </div>
-        }
 
+                <div class="divider"></div>
+
+                <p>
+                    <IgbButton Class="load-sample-button" @onclick="OnClickLoadSampleFile">
+                        内蔵のサンプルデータで表示
+                    </IgbButton>
+                </p>
+
+                <div class="divider"></div>
+
+                <p class="guide-message">ここにファイルをドラッグ & ドロップ</p>
+            </div>
+
+            <ul class="dashboard-list">
+                @if (this.Items != null)
+                {
+                    foreach (var item in this.Items)
+                    {
+                        <li @key="item.ID" class="dashboard-item @(ActiveItem == item ? "dashboard-item-active" : "")" @onclick="(s => OnItemSelected(item))">
+                            <span class="material-icons">description</span>@item.Title
+                        </li>
+                    }
+                }
+            </ul>
+
+            @if (this.IsLoading == true)
+            {
+                <div class="progress-style">
+                    <p class="progress-message">
+                        データを設定中です
+                    </p>
+                    <IgbLinearProgress Variant="ProgressBaseVariant.Primary" Indeterminate="true" />
+                </div>
+            }
+
+        </div>
     </FileDropZone>
 </div>
 

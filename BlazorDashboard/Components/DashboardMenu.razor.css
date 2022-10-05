@@ -29,6 +29,15 @@
     transition: border linear 0.2s;
 }
 
+.scroll-window {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    overflow: auto;
+}
+
     ::deep .drop-zone::after {
         content: "ここににファイルをドロップ";
         position: absolute;
