@@ -2,7 +2,13 @@
     height: 54px;
     display: flex;
     align-items: center;
+    opacity: 0;
+    transition: opacity linear 0.2s;
 }
+
+    .page-header.ready {
+        opacity: 1;
+    }
 
 .page-title {
     font-size: xx-large;

@@ -1,6 +1,12 @@
 ﻿.page-main {
     flex: 1;
+    opacity: 0;
+    transition: opacity linear 0.2s;
 }
+
+    .page-main.ready {
+        opacity: 1;
+    }
 
 ::deep #dockmanager1 {
     width: 100%;

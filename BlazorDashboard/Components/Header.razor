@@ -1,4 +1,4 @@
-﻿<div class="page-header">
+﻿<div class="page-header @(this.DisplayReady ? "ready" : "")">
 
     <div class="page-title">
         Blazor Dashboard
@@ -7,7 +7,7 @@
     <div class="actions">
         <IgbDropdown>
             <IgbButton slot="target"><span class="material-icons">add</span> 表示の追加 <span class="material-icons">more_vert</span></IgbButton>
-            <IgbDropdownItem @onclick="@(() => OnClickAddComponent.InvokeAsync(nameof(DashboardMenu)))" Active="false" Selected="false" >
+            <IgbDropdownItem @onclick="@(() => OnClickAddComponent.InvokeAsync(nameof(DashboardMenu)))" Active="false" Selected="false">
                 <span class="material-icons">description</span> データソース
             </IgbDropdownItem>
             <IgbDropdownItem @onclick="@(() => OnClickAddComponent.InvokeAsync(nameof(GridView)))" Active="false" Selected="false">
@@ -30,4 +30,16 @@
 @code {
     [Parameter]
     public EventCallback<string> OnClickAddComponent { get; set; }
+
+    private bool DisplayReady = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await Task.Delay(500);
+            this.DisplayReady = true;
+            this.StateHasChanged();
+        }
+    }
 }
