@@ -1,7 +1,6 @@
 ﻿@using System.Data
 @using BlazorDashboard.Services
 @implements IAsyncDisposable
-@inject IIgniteUIBlazor IgniteUIBlazor
 @inject IJSRuntime JS
 
 <div class="chart-view">
@@ -173,9 +172,7 @@
         "Point",
         "Line",
         "Spline",
-        "Spline",
-        "Step",
-        "Step",
+        // "Step",
         "Waterfall"
     };
 
@@ -188,16 +185,6 @@
     private IJSObjectReference? JSModule;
 
     private ElementReference DataChartContainerRef;
-
-    protected override void OnInitialized()
-    {
-        IgbDataChartCoreModule.Register(IgniteUIBlazor);
-        IgbDataChartCategoryCoreModule.Register(IgniteUIBlazor);
-        IgbDataChartCategoryModule.Register(IgniteUIBlazor);
-        IgbDataChartVerticalCategoryModule.Register(IgniteUIBlazor);
-        IgbDataChartInteractivityModule.Register(IgniteUIBlazor);
-        IgbLegendModule.Register(IgniteUIBlazor);
-    }
 
     public override async Task SetParametersAsync(ParameterView parameters)
     {
