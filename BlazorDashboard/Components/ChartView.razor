@@ -9,7 +9,7 @@
     <div class="control-bar">
         <label class="options-label">Category Type: </label>
         <IgbDropdown Change="OnSeriesTypeChanged">
-            <IgbButton slot="target">@SeriesType</IgbButton>
+            <IgbButton slot="target">@SeriesType <span class="material-icons">expand_more</span></IgbButton>
             @foreach (var type in SeriesTypes)
             {
                 <IgbDropdownItem Selected="@(this.SeriesType == type)" Value="@type">
@@ -20,7 +20,7 @@
 
         <span class="legend-title">X軸: </span>
         <IgbDropdown Change="@(e => this.XColumn = e.Detail.Value)">
-            <IgbButton slot="target">@XColumn</IgbButton>
+            <IgbButton slot="target">@XColumn <span class="material-icons">expand_more</span></IgbButton>
             @foreach (var column in ColumnsX)
             {
                 <IgbDropdownItem Selected="@(this.XColumn == column)" Value="@column">
@@ -31,7 +31,7 @@
 
         <span class="legend-title">Y軸: </span>
         <IgbDropdown Change="@(e => this.YColumn = e.Detail.Value)">
-            <IgbButton slot="target">@YColumn</IgbButton>
+            <IgbButton slot="target">@YColumn <span class="material-icons">expand_more</span></IgbButton>
             @foreach (var column in ColumnsY)
             {
                 <IgbDropdownItem Selected="@(this.YColumn == column)" Value="@column">

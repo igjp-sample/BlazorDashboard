@@ -10,6 +10,7 @@
     display: flex;
     align-items: center;
     font-size: 14px;
+    white-space: nowrap;
 }
 
 .options-label {
@@ -26,6 +27,14 @@
     background-color: hsla(var(--igc-primary-500), var(--igc-primary-a));
     text-transform: none;
 }
+
+::deep igc-dropdown igc-dropdown-item {
+    transition: background-color ease 0.2s;
+}
+
+    ::deep igc-dropdown igc-dropdown-item[active] {
+        background-color: hsla(var(--igc-primary-200), var(--igc-primary-a));
+    }
 
 .data-chart-area {
     flex: 1;
