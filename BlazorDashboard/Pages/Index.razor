@@ -124,12 +124,12 @@
         if (firstRender)
         {
             // ブラウザのローカルストレージに JSON 形式で保存しておいた表示コンポーネントの情報を、逆シリアル化して復元
-            var components = await this.LocalStorage.GetItemAsync<ComponentDescriptor[]>("components");
+            var components = await this.LocalStorage.GetItemAsync<ComponentDescriptor[]>("BlazorDashboard/components");
             this.Components.AddRange(components ?? _InitialComponents);
             this.StateHasChanged();
 
             // ブラウザのローカルストレージに保存しておいたドックマネージャーのレイアウト情報から、レイアウトを復元
-            var layout = await this.LocalStorage.GetItemAsStringAsync("layout");
+            var layout = await this.LocalStorage.GetItemAsStringAsync("BlazorDashboard/layout");
             if (!string.IsNullOrEmpty(layout)) await this.Helper.RestoreLayoutAsync("#dockmanager1", layout);
 
             // ドックマネージャーが発行するイベントを購読
@@ -165,7 +165,7 @@
         await this.Helper.AttachContentPaneAsync("#dockmanager1", descriptor.Id, descriptor.HeaderText);
 
         // 表示コンポーネントの情報を、ブラウザのローカルストレージに保存
-        await this.LocalStorage.SetItemAsync("components", this.Components);
+        await this.LocalStorage.SetItemAsync("BlazorDashboard/components", this.Components);
     }
 
     /// <summary>
@@ -174,7 +174,7 @@
     private async ValueTask OnLayoutChange(string? layout)
     {
         if (layout == null) return;
-        await this.LocalStorage.SetItemAsStringAsync("layout", layout);
+        await this.LocalStorage.SetItemAsStringAsync("BlazorDashboard/layout", layout);
     }
 
     /// <summary>
@@ -188,7 +188,7 @@
             .ToArray();
         foreach (var descriptor in componentsToRemove) { this.Components.Remove(descriptor!); }
 
-        await LocalStorage.SetItemAsync("components", this.Components);
+        await LocalStorage.SetItemAsync("BlazorDashboard/components", this.Components);
         this.StateHasChanged();
     }
 
