@@ -19,7 +19,7 @@
             <div @key="component.Id" slot="@component.Id" class="dockmanager-content">
                 @if (component.ComponentName == nameof(DashboardMenu))
                 {
-                    <DashboardMenu OnSelectedItemCallback="OnSelectedDashboard"></DashboardMenu>
+                    <DashboardMenu OnSelectedItemCallback="OnSelectedDashboard" DataTable="SelectedDataTable"></DashboardMenu>
                 }
                 @if (component.ComponentName == nameof(GridView))
                 {

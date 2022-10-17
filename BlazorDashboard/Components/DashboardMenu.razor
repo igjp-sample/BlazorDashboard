@@ -1,4 +1,5 @@
 ﻿@using System.IO
+@using System.Data
 @using System.Collections.ObjectModel
 @using System.Collections.Specialized
 @using Infragistics.Documents.Excel
@@ -41,7 +42,7 @@
                 {
                     foreach (var item in this.Items)
                     {
-                        <li @key="item.ID" class="dashboard-item @(ActiveItem == item ? "dashboard-item-active" : "")" @onclick="(s => OnItemSelected(item))">
+                        <li @key="item.ID" class="dashboard-item @(this.DataTable == item.DataTable ? "dashboard-item-active" : "")" @onclick="(s => OnItemSelected(item))">
                             <span class="material-icons">description</span>@item.Title
                         </li>
                     }
@@ -67,9 +68,10 @@
     [Parameter]
     public EventCallback<MenuSelectedEventArgs> OnSelectedItemCallback { get; set; }
 
-    private ObservableCollection<DashboardItem>? Items;
+    [Parameter]
+    public DataTable? DataTable { get; set; }
 
-    public DashboardItem? ActiveItem;
+    private ObservableCollection<DashboardItem>? Items;
 
     private const long MaxFileSize = 1024 * 15;
 
@@ -116,7 +118,6 @@
     private void OnItemSelected(DashboardItem item)
     {
         this.OnSelectedItemCallback.InvokeAsync(new(item));
-        this.ActiveItem = item;
     }
 
     private async Task OnInputFileChanged(InputFileChangeEventArgs args)
