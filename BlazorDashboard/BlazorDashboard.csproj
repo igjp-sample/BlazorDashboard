@@ -19,8 +19,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.10" PrivateAssets="all" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.2.0" />
-    <PackageReference Include="PublishSPAforGitHubPages.Build" Version="2.0.1" />
-    <PackageReference Include="Toolbelt.Blazor.FileDropZone" Version="2.0.0" />
+    <PackageReference Include="PublishSPAforGitHubPages.Build" Version="2.0.2" />
+    <PackageReference Include="Toolbelt.Blazor.FileDropZone" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup>
