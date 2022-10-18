@@ -249,9 +249,8 @@
             this.StateHasChanged();
         }
 
-        var jsonData = JsonSerializer.Serialize(this.DataTable.AsDictionaryEnumerable());
         var module = await this.GetJsModuleAsync();
-        await module.InvokeVoidAsync("setDataSource", this.DataChartContainerRef, jsonData);
+        await module.InvokeVoidAsync("setDataSource", this.DataChartContainerRef, this.DataTable.AsDictionaryEnumerable());
 
         this.StateHasChanged();
     }

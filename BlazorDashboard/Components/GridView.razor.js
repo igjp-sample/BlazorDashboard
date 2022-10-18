@@ -20,8 +20,7 @@
   });
 };
 
-export const setDataSource = async (containerElement, dataSourceJson) => {
+export const setDataSource = async (containerElement, dataSourceObject) => {
   const dataGrid = await getDataGrid(containerElement);
-  const dataSourceObject = JSON.parse(dataSourceJson);
   dataGrid.dataSource = dataSourceObject;
 };

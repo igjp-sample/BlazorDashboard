@@ -34,9 +34,8 @@
         await base.SetParametersAsync(parameters);
         if (!object.ReferenceEquals(prevDataTable, this.GridDataTable))
         {
-            var jsonData = JsonSerializer.Serialize(this.GridDataTable.AsDictionaryEnumerable());
             var module = await this.GetJsModuleAsync();
-            await module.InvokeVoidAsync("setDataSource", this.DataGridContainerRef, jsonData);
+            await module.InvokeVoidAsync("setDataSource", this.DataGridContainerRef, this.GridDataTable.AsDictionaryEnumerable());
         }
     }
 

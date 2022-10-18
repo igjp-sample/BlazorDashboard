@@ -20,13 +20,12 @@
   });
 };
 
-export const setDataSource = async (containerElement, dataSourceJson) => {
+export const setDataSource = async (containerElement, dataSourceObject) => {
 
   const dataChart = await getDataChart(containerElement);
   const series = dataChart.actualSeries;
   const axis = dataChart.actualAxes;
 
-  const dataSourceObject = JSON.parse(dataSourceJson);
   dataChart.dataSource = dataSourceObject;
   series[0].dataSource = dataSourceObject;
   axis[0].dataSource = dataSourceObject;
