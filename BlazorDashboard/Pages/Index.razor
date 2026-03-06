@@ -1,11 +1,9 @@
 @page "/"
 @using System.Data
-@using Blazored.LocalStorage
 @using static BlazorDashboard.Components.DashboardMenu
 @implements IAsyncDisposable
 @inject IJSRuntime JS
 @inject DashboardService DashboardService
-@inject ILocalStorageService LocalStorage
 @inject DockManagerHelper Helper
 
 <PageTitle>Blazor Dashboard</PageTitle>
@@ -120,12 +118,13 @@
         if (firstRender)
         {
             // ブラウザのローカルストレージに JSON 形式で保存しておいた表示コンポーネントの情報を、逆シリアル化して復元
-            var components = await this.LocalStorage.GetItemAsync<ComponentDescriptor[]>("BlazorDashboard/components");
+            var componentsJson = await this.JS.InvokeAsync<string?>("localStorage.getItem", "BlazorDashboard/components");
+            var components = JsonSerializer.Deserialize<ComponentDescriptor[]>(componentsJson ?? "null");
             this.Components.AddRange(components ?? _InitialComponents);
             this.StateHasChanged();
 
             // ブラウザのローカルストレージに保存しておいたドックマネージャーのレイアウト情報から、レイアウトを復元
-            var layout = await this.LocalStorage.GetItemAsStringAsync("BlazorDashboard/layout");
+            var layout = await this.JS.InvokeAsync<string?>("localStorage.getItem", "BlazorDashboard/layout");
             if (!string.IsNullOrEmpty(layout)) await this.Helper.RestoreLayoutAsync("#dockmanager1", layout);
 
             // ドックマネージャーが発行するイベントを購読
@@ -161,7 +160,8 @@
         await this.Helper.AttachContentPaneAsync("#dockmanager1", descriptor.Id, descriptor.HeaderText);
 
         // 表示コンポーネントの情報を、ブラウザのローカルストレージに保存
-        await this.LocalStorage.SetItemAsync("BlazorDashboard/components", this.Components);
+        var componentsJson = JsonSerializer.Serialize(this.Components);
+        await this.JS.InvokeVoidAsync("localStorage.setItem", "BlazorDashboard/components", componentsJson);
     }
 
     /// <summary>
@@ -170,7 +170,7 @@
     private async ValueTask OnLayoutChange(string? layout)
     {
         if (layout == null) return;
-        await this.LocalStorage.SetItemAsStringAsync("BlazorDashboard/layout", layout);
+        await this.JS.InvokeVoidAsync("localStorage.setItem", "BlazorDashboard/layout", layout);
     }
 
     /// <summary>
@@ -184,7 +184,8 @@
             .ToArray();
         foreach (var descriptor in componentsToRemove) { this.Components.Remove(descriptor!); }
 
-        await LocalStorage.SetItemAsync("BlazorDashboard/components", this.Components);
+        var componentsJson = JsonSerializer.Serialize(this.Components);
+        await this.JS.InvokeVoidAsync("localStorage.setItem", "BlazorDashboard/components", componentsJson);
         this.StateHasChanged();
     }
 
