@@ -1,26 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <WarningsAsErrors>nullable</WarningsAsErrors>
     <ImplicitUsings>enable</ImplicitUsings>
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
     <BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
   </PropertyGroup>
-  
+
   <PropertyGroup>
     <GHPages>true</GHPages>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="IgniteUI.Blazor" Version="22.1.76" />
-    <PackageReference Include="IgniteUI.Blazor.Documents.Excel" Version="22.1.41" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.10" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.10" PrivateAssets="all" />
+    <PackageReference Include="IgniteUI.Blazor" Version="25.2.38" />
+    <PackageReference Include="IgniteUI.Blazor.Documents.Excel" Version="25.2.38" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.3" PrivateAssets="all" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.2.0" />
-    <PackageReference Include="PublishSPAforGitHubPages.Build" Version="2.0.2" />
-    <PackageReference Include="Toolbelt.Blazor.FileDropZone" Version="2.1.1" />
+    <PackageReference Include="PublishSPAforGitHubPages.Build" Version="3.0.3" />
+    <PackageReference Include="Toolbelt.Blazor.FileDropZone" Version="3.1.0" />
   </ItemGroup>
 
   <ItemGroup>

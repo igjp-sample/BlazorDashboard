@@ -1,42 +1,14 @@
-﻿
-// Obtains the DockManager body element implemented in WebComponents.
-// However, the DockManager body element is hidden in the Shadow DOM as a child element of the element drawn with the Blazor component tag,
-// so it is retrieved by carefully traversing the DOM hierarchy.
-function getDockManagerInternal(dockManagerContainerSelector) {
-  const dockManager = document.querySelector(dockManagerContainerSelector)
-    ?.querySelector("igc-component-renderer-container")
-    ?.shadowRoot
-    ?.querySelector("igc-dockmanager");
-  return dockManager || null;
-}
-
 // Ensure the DockManagerf instance is ready.
-function getDockManager(dockManagerContainerSelector) {
-
-  return new Promise((resolve, reject) => {
-    const dockManager = getDockManagerInternal(dockManagerContainerSelector);
-    if (dockManager !== null) {
-      resolve(dockManager);
-    }
-    else {
-      let counter = 0;
-      const timerId = setInterval(() => {
-        counter++;
-        const dockManager = getDockManagerInternal(dockManagerContainerSelector);
-        if (dockManager !== null) {
-          clearInterval(timerId);
-          resolve(dockManager);
-        }
-        else if (counter > (5000 / 10)) {
-          clearInterval(timerId);
-          reject();
-        }
-      }, 10)
-    }
-  });
+const getDockManager = async (dockManagerContainerSelector) => {
+  for (let i = 0; i < 50; i++) {
+    const dockManager = document.querySelector(dockManagerContainerSelector)?.querySelector("igc-dockmanager");
+    if (dockManager) return dockManager;
+    await new Promise(resolve => setTimeout(resolve, 10));
+  }
+  throw new Error("DockManager instance not found within the timeout period.");
 }
 
-export async function attachContentPane(dockManagerContainerSelector, contentId, header) {
+export const attachContentPane = async (dockManagerContainerSelector, contentId, header) => {
 
   const dockManager = await getDockManager(dockManagerContainerSelector);
 
@@ -60,7 +32,7 @@ export async function attachContentPane(dockManagerContainerSelector, contentId,
   dockManager.layout = { ...dockManager.layout };
 }
 
-export async function restoreLayout(dockManagerContainerSelector, layout) {
+export const restoreLayout = async (dockManagerContainerSelector, layout) => {
   const dockManager = await getDockManager(dockManagerContainerSelector);
   dockManager.layout = JSON.parse(layout);
 }
@@ -68,7 +40,7 @@ export async function restoreLayout(dockManagerContainerSelector, layout) {
 let eventHandlerCounter = 0;
 const eventHandlers = new Map();
 
-export async function subscribeEvent(dockManagerContainerSelector, eventName, handlerId, dotNetObjRef, callbackMethodName) {
+export const subscribeEvent = async (dockManagerContainerSelector, eventName, handlerId, dotNetObjRef, callbackMethodName) => {
 
   const dockManager = await getDockManager(dockManagerContainerSelector);
 
@@ -93,7 +65,7 @@ export async function subscribeEvent(dockManagerContainerSelector, eventName, ha
   return subscriptionId;
 }
 
-export async function unsubscribeEvent(dockManagerContainerSelector, subscriptionId) {
+export const unsubscribeEvent = async (dockManagerContainerSelector, subscriptionId) => {
   const dockManager = await getDockManager(dockManagerContainerSelector);
   const eventHandler = eventHandlers.get(subscriptionId) || null;
   if (eventHandler === null) return;

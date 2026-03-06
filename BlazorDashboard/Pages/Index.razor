@@ -1,4 +1,4 @@
-﻿@page "/"
+@page "/"
 @using System.Data
 @using Blazored.LocalStorage
 @using static BlazorDashboard.Components.DashboardMenu
@@ -71,40 +71,36 @@
             {
                 PaneType = DockManagerPaneType.SplitPane,
                 Orientation = SplitPaneOrientation.Horizontal,
-                Panes = new IgbDockManagerPaneCollection
+            }.WithPanes(
+                new IgbContentPane
                 {
+                    PaneType = DockManagerPaneType.ContentPane,
+                    ContentId = "content1",
+                    Header = "データソース",
+                    Size = 25
+                },
+                new IgbSplitPane
+                {
+                    PaneType = DockManagerPaneType.SplitPane,
+                    Orientation = SplitPaneOrientation.Vertical,
+                    Size = 75,
+                }.WithPanes(
                     new IgbContentPane
                     {
                         PaneType = DockManagerPaneType.ContentPane,
-                        ContentId = "content1",
-                        Header = "データソース",
-                        Size = 25
+                        ContentId = "content2",
+                        Header = "データグリッド",
+                        Size = 100
                     },
-                    new IgbSplitPane
+                    new IgbContentPane
                     {
-                        PaneType = DockManagerPaneType.SplitPane,
-                        Orientation = SplitPaneOrientation.Vertical,
-                        Size = 75,
-                        Panes = new IgbDockManagerPaneCollection
-                        {
-                            new IgbContentPane
-                            {
-                                PaneType = DockManagerPaneType.ContentPane,
-                                ContentId = "content2",
-                                Header = "データグリッド",
-                                Size = 100
-                            },
-                            new IgbContentPane
-                            {
-                                PaneType = DockManagerPaneType.ContentPane,
-                                ContentId = "content3",
-                                Header = "チャート",
-                                Size = 200
-                            }
-                        }
+                        PaneType = DockManagerPaneType.ContentPane,
+                        ContentId = "content3",
+                        Header = "チャート",
+                        Size = 200
                     }
-                }
-            }
+                )
+            )
         };
 #pragma warning restore BL0005
 
@@ -134,7 +130,7 @@
 
             // ドックマネージャーが発行するイベントを購読
             this._Subscriptions.Add(await this.Helper.SubscribeLayoutChangeEventAsync("#dockmanager1", OnLayoutChange));
-            this._Subscriptions.Add(await this.Helper.SubscribePaneCloseEventAsync("#dockmanager1", OnPaneClose));
+            // this._Subscriptions.Add(await this.Helper.SubscribePaneCloseEventAsync("#dockmanager1", OnPaneClose));
 
             this.DisplayReady = true;
             this.StateHasChanged();
