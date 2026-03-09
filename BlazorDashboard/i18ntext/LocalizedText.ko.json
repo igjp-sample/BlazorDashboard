@@ -1,4 +1,5 @@
 {
+  "BlazorDashboard": "Blazor 대시보드",
   "AddVisualization": "시각화 추가",
   "DataSource": "데이터 소스",
   "DataGrid": "데이터 그리드",

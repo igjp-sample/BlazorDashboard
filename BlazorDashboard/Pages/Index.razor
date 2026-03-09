@@ -7,30 +7,33 @@
 @inject DashboardService DashboardService
 @inject DockManagerHelper Helper
 
-<PageTitle>Blazor Dashboard</PageTitle>
+<PageTitle>@_T.BlazorDashboard</PageTitle>
 
 <Header OnClickAddComponent="OnClickAddComponent" />
 
 <main>
-    <IgbDockManager id="dockmanager1" Layout="this._InitialLayout">
-        @foreach (var component in this.Components)
-        {
-            <div @key="component.Id" slot="@component.Id" class="dockmanager-content">
-                @if (component.ComponentName == nameof(DashboardMenu))
-                {
-                    <DashboardMenu OnSelectedItemCallback="OnSelectedDashboard" DataTable="SelectedDataTable"></DashboardMenu>
-                }
-                @if (component.ComponentName == nameof(GridView))
-                {
-                    <GridView GridDataTable="@SelectedDataTable"></GridView>
-                }
-                @if (component.ComponentName == nameof(ChartView))
-                {
-                    <ChartView DataTable="@SelectedDataTable"></ChartView>
-                }
-            </div>
-        }
-    </IgbDockManager>
+    @if (_initializedCompletionSource.Task.IsCompleted)
+    {
+        <IgbDockManager id="dockmanager1" Layout="this.GetInitialLayout()">
+            @foreach (var component in this.Components)
+            {
+                <div @key="component.Id" slot="@component.Id" class="dockmanager-content">
+                    @if (component.ComponentName == nameof(DashboardMenu))
+                    {
+                        <DashboardMenu OnSelectedItemCallback="OnSelectedDashboard" DataTable="SelectedDataTable"></DashboardMenu>
+                    }
+                    @if (component.ComponentName == nameof(GridView))
+                    {
+                        <GridView GridDataTable="@SelectedDataTable"></GridView>
+                    }
+                    @if (component.ComponentName == nameof(ChartView))
+                    {
+                        <ChartView DataTable="@SelectedDataTable"></ChartView>
+                    }
+                </div>
+            }
+        </IgbDockManager>
+    }
 </main>
 
 <footer>
@@ -70,18 +73,18 @@
     /// <summary>
     /// ドックマネージャーの初期レイアウト
     /// </summary>
-    private IgbDockManagerLayout _InitialLayout = new IgbDockManagerLayout();
+    private IgbDockManagerLayout? _InitialLayout = null;
 
 #pragma warning disable BL0005
     private IgbDockManagerLayout GetInitialLayout()
     {
-        return new IgbDockManagerLayout
+        return _InitialLayout ??= new IgbDockManagerLayout
+        {
+            RootPane = new IgbSplitPane
             {
-                RootPane = new IgbSplitPane
-                {
-                    PaneType = DockManagerPaneType.SplitPane,
-                    Orientation = SplitPaneOrientation.Horizontal,
-                }.WithPanes(
+                PaneType = DockManagerPaneType.SplitPane,
+                Orientation = SplitPaneOrientation.Horizontal,
+            }.WithPanes(
                     new IgbContentPane
                     {
                         PaneType = DockManagerPaneType.ContentPane,
@@ -111,7 +114,7 @@
                         }
                     )
                 )
-            };
+        };
     }
 #pragma warning restore BL0005
 
@@ -142,20 +145,28 @@
         {
             await _initializedCompletionSource.Task;
 
-            // ブラウザのローカルストレージに JSON 形式で保存しておいた表示コンポーネントの情報を、逆シリアル化して復元
+            // ドックマネージャーが発行するイベントを購読
+            this._Subscriptions.Add(await this.Helper.SubscribeLayoutChangeEventAsync("#dockmanager1", OnLayoutChange));
+            this._Subscriptions.Add(await this.Helper.SubscribePaneCloseEventAsync("#dockmanager1", OnPaneClose));
+
             var componentsJson = await this.JS.InvokeAsync<string?>("localStorage.getItem", "BlazorDashboard/components");
+            var layout = await this.JS.InvokeAsync<string?>("localStorage.getItem", "BlazorDashboard/layout");
+            if (string.IsNullOrEmpty(componentsJson) || string.IsNullOrEmpty(layout))
+            {
+                await this.JS.InvokeAsync<string?>("localStorage.setItem", "BlazorDashboard/components", "");
+                await this.JS.InvokeAsync<string?>("localStorage.setItem", "BlazorDashboard/layout", "");
+                this.Components.AddRange(GetInitialComponents());
+                this.StateHasChanged();
+                return;
+            }
+
+            // ブラウザのローカルストレージに JSON 形式で保存しておいた表示コンポーネントの情報を、逆シリアル化して復元
             var components = JsonSerializer.Deserialize<ComponentDescriptor[]>(componentsJson ?? "null");
             this.Components.AddRange(components ?? GetInitialComponents());
             this.StateHasChanged();
 
             // ブラウザのローカルストレージに保存しておいたドックマネージャーのレイアウト情報から、レイアウトを復元
-            var layout = await this.JS.InvokeAsync<string?>("localStorage.getItem", "BlazorDashboard/layout");
-            if (!string.IsNullOrEmpty(layout)) await this.Helper.RestoreLayoutAsync("#dockmanager1", layout);
-            else this._InitialLayout = GetInitialLayout();
-
-            // ドックマネージャーが発行するイベントを購読
-            this._Subscriptions.Add(await this.Helper.SubscribeLayoutChangeEventAsync("#dockmanager1", OnLayoutChange));
-            this._Subscriptions.Add(await this.Helper.SubscribePaneCloseEventAsync("#dockmanager1", OnPaneClose));
+            await this.Helper.RestoreLayoutAsync("#dockmanager1", layout);
 
             this.StateHasChanged();
         }

@@ -85,7 +85,7 @@
     private ElementReference FileSelectorRef;
 
     private IJSObjectReference? JSModule;
-    
+
     private LocalizedText _T = new();
 
     protected override async Task OnInitializedAsync()
@@ -115,8 +115,12 @@
     {
         async IAsyncEnumerable<(string, byte[])> sampleFileLoader()
         {
-            var sampleFileytes = await this.HttpClient.GetByteArrayAsync("./sample-data.xlsx");
-            yield return ("sample-data.xlsx", sampleFileytes);
+            var fullLang = await this.JS.GetValueAsync<string?>("navigator.language");
+            var lang = fullLang?.Split("-").FirstOrDefault() ?? "en";
+            lang = new[] { "en", "ja", "ko" }.Contains(lang) ? lang : "en";
+            var sampleFileName = $"sample-data-{lang}.xlsx";
+            var sampleFileytes = await this.HttpClient.GetByteArrayAsync($"./{sampleFileName}");
+            yield return (sampleFileName, sampleFileytes);
         };
 
         await this.LoadDashboardItemsAsync(sampleFileLoader());
