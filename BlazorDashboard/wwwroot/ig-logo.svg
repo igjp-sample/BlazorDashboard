@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 149.1 136.5">
+  <style>
+    .st0{fill:#0099FF;} .st1{fill:#FFFFFF;}
+  </style>
+  <g id="Layer_1">
+    <path class="st0" d="M0 0h149.1v136.5H0z"/>
+    <path class="st1" d="M23.1 23.2h23.8v23.5H23.1z"/>
+    <path class="st1" d="M110.8 23.2H55.5v47.1H78V46.5h24.1v43.9H46.3V55.3H23.1v43.1c0 8.2 6.7 14.9 14.9 14.9h87.7V38.1c0-8.2-6.7-14.9-14.9-14.9z"/>
+  </g>
+</svg>

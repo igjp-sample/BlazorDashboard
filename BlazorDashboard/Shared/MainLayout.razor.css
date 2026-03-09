@@ -1,10 +1,15 @@
 .page-container {
-    color: white;
-}
-
-main {
-    padding: 0 12px 12px 12px;
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    padding: 24px;
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 12px);
+    gap: 12px;
+    opacity: 0;
+    transition: opacity linear 0.2s;
 }
+
+    .page-container.ready {
+        opacity: 1;
+    }

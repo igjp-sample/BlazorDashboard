@@ -1,8 +1,6 @@
-﻿<div class="page-header @(this.DisplayReady ? "ready" : "")">
+<header>
 
-    <div class="page-title">
-        Blazor Dashboard
-    </div>
+    <h1>Blazor Dashboard</h1>
 
     <div class="actions">
         <IgbDropdown>
@@ -19,27 +17,9 @@
         </IgbDropdown>
     </div>
 
-    <div class="appendix-link">
-        <a href="https://jp.infragistics.com/products/ignite-ui-blazor" target="_blank">
-            <span class="material-icons">sms</span>
-        </a>
-    </div>
-
-</div>
+</header>
 
 @code {
     [Parameter]
     public EventCallback<string> OnClickAddComponent { get; set; }
-
-    private bool DisplayReady = false;
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await Task.Delay(500);
-            this.DisplayReady = true;
-            this.StateHasChanged();
-        }
-    }
 }

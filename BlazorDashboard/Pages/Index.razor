@@ -10,7 +10,7 @@
 
 <Header OnClickAddComponent="OnClickAddComponent" />
 
-<div class="page-main @(this.DisplayReady ? "ready" : "")">
+<main>
     <IgbDockManager id="dockmanager1" Layout="this._InitialLayout">
         @foreach (var component in this.Components)
         {
@@ -30,11 +30,15 @@
             </div>
         }
     </IgbDockManager>
-</div>
+</main>
+
+<footer>
+    <a href="https://jp.infragistics.com/products/ignite-ui-blazor" target="_blank" class="appendix-link">
+        Powered by Ignite UI for Blazor | Infragistics
+    </a>
+</footer>
 
 @code {
-    private bool DisplayReady = false;
-
     private DataTable? SelectedDataTable;
 
     /// <summary>
@@ -64,12 +68,12 @@
     /// ドックマネージャーの初期レイアウト
     /// </summary>
     private readonly IgbDockManagerLayout _InitialLayout = new IgbDockManagerLayout
+    {
+        RootPane = new IgbSplitPane
         {
-            RootPane = new IgbSplitPane
-            {
-                PaneType = DockManagerPaneType.SplitPane,
-                Orientation = SplitPaneOrientation.Horizontal,
-            }.WithPanes(
+            PaneType = DockManagerPaneType.SplitPane,
+            Orientation = SplitPaneOrientation.Horizontal,
+        }.WithPanes(
                 new IgbContentPane
                 {
                     PaneType = DockManagerPaneType.ContentPane,
@@ -99,7 +103,7 @@
                     }
                 )
             )
-        };
+    };
 #pragma warning restore BL0005
 
     /// <summary>
@@ -131,7 +135,6 @@
             this._Subscriptions.Add(await this.Helper.SubscribeLayoutChangeEventAsync("#dockmanager1", OnLayoutChange));
             // this._Subscriptions.Add(await this.Helper.SubscribePaneCloseEventAsync("#dockmanager1", OnPaneClose));
 
-            this.DisplayReady = true;
             this.StateHasChanged();
         }
     }

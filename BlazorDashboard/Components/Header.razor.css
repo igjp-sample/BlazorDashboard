@@ -1,34 +1,18 @@
-.page-header {
+header {
     height: 54px;
     display: flex;
     align-items: center;
-    opacity: 0;
-    transition: opacity linear 0.2s;
+    padding-bottom: 12px;
+    border-bottom: solid 2px var(--ig-primary-500);
 }
 
-    .page-header.ready {
-        opacity: 1;
-    }
-
-.page-title {
-    font-size: xx-large;
-    flex: 1;
-}
-
-.appendix-link {
-    margin-left: 12px;
-}
-
-    .appendix-link a {
-        color: #fff;
-        width: 36px;
-        height: 36px;
-        display: flex;
-        border-radius: 4px;
-        background: #ff4081ff;
-        align-items: center;
-        justify-content: space-around;
-        text-decoration: none;
+    header h1 {
+        color: var(--ig-primary-500);
+        line-height: unset;
+        margin: 0;
+        flex: 1;
+        font-size: xx-large;
+        font-weight: bold;
     }
 
 ::deep igc-button::part(base) {

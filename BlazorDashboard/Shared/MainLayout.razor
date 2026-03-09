@@ -1,7 +1,20 @@
-﻿@inherits LayoutComponentBase
+@inherits LayoutComponentBase
 
-<div class="page-container">
-    <main>
-        @Body
-    </main>
+<div class="page-container @(this.DisplayReady ? "ready" : "")">
+    @Body
 </div>
+
+@code
+{
+    private bool DisplayReady = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await Task.Delay(500);
+            this.DisplayReady = true;
+            this.StateHasChanged();
+        }
+    }
+}
