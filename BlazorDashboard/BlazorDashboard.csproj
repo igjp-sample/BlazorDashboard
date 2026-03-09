@@ -9,10 +9,6 @@
     <BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <GHPages>true</GHPages>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="IgniteUI.Blazor" Version="25.2.38" />
     <PackageReference Include="IgniteUI.Blazor.Documents.Excel" Version="25.2.38" />

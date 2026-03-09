@@ -12,18 +12,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    # Checkout the code
+    - uses: actions/checkout@v6
 
+    # Install .NET SDK
     - name: Setup .NET
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@v5
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 10.0.x
 
     - name: Install .NET WebAssembly Tools
       run: dotnet workload install wasm-tools
 
+    # Setup NuGet package source
+    - name: Setup NuGet package source
+      run: dotnet nuget add source "https://packages.infragistics.com/nuget/licensed" 
+        -n Infragistics 
+        -u api 
+        -p ${{ secrets.ACCESSTOKEN_FOR_NUGET }}
+        --store-password-in-clear-text
+
     - name: Publish
-      run: dotnet publish BlazorDashboard/BlazorDashboard.csproj -p:GHPages=true -c:Release -o:public
+      run: dotnet publish BlazorDashboard/BlazorDashboard.csproj -p:GHPages=true -o:public
 
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
