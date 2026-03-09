@@ -1,13 +1,15 @@
-﻿@using System.Data
+@using System.Data
 @implements IAsyncDisposable
 @inject IJSRuntime JS;
 
 <div @ref="DataGridContainerRef" class="data-grid-area">
-    <IgbDataGrid Height="100%"
-                 Width="100%"
-                 EditMode="EditModeType.None"
-                 AutoGenerateColumns="true">
-    </IgbDataGrid>
+    <IgbGrid Height="100%"
+             Width="100%"
+             AutoGenerate
+             AllowFiltering
+             FilterMode="FilterMode.ExcelStyleFilter"
+             Moving>
+    </IgbGrid>
 </div>
 
 @if (GridDataTable == null)
@@ -25,7 +27,7 @@
     public DataTable? GridDataTable { get; set; }
 
     private IJSObjectReference? JSModule;
-    
+
     private ElementReference DataGridContainerRef;
 
     public override async Task SetParametersAsync(ParameterView parameters)
