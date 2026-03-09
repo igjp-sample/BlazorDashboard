@@ -1,0 +1,17 @@
+{
+  "AddVisualization": "Add Visualization",
+  "BlazorDashboard": "Blazor Dashboard",
+  "Chart": "Chart",
+  "ChartType": "Chart Type",
+  "DataGrid": "Data Grid",
+  "DataSource": "Data Source",
+  "Drag_And_Drop": "Drag and drop a .xlsx file here",
+  "DropHere": "Drop your file here",
+  "Load_Internal_Sample": "Load an internal sample",
+  "LoadData": "Load Data",
+  "LoadingData": "Loading data...",
+  "OR": "OR",
+  "Select_Xlsx_File": "Select a .xlsx file",
+  "XAxis": "X-Axis",
+  "YAxis": "Y-Axis"
+}

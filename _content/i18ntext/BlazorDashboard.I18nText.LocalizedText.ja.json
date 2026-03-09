@@ -1,0 +1,17 @@
+{
+  "AddVisualization": "表示の追加",
+  "BlazorDashboard": "Blazor ダッシュボード",
+  "Chart": "チャート",
+  "ChartType": "チャート種別",
+  "DataGrid": "データグリッド",
+  "DataSource": "データソース",
+  "Drag_And_Drop": "ここにファイルをドラッグ & ドロップ",
+  "DropHere": "ここににファイルをドロップ",
+  "Load_Internal_Sample": "内蔵のサンプルデータで表示",
+  "LoadData": "データを選択してください",
+  "LoadingData": "データを設定中です",
+  "OR": "または",
+  "Select_Xlsx_File": ".xlsx ファイル選択",
+  "XAxis": "X軸",
+  "YAxis": "Y軸"
+}

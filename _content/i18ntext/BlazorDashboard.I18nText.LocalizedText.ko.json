@@ -1,0 +1,17 @@
+{
+  "AddVisualization": "시각화 추가",
+  "BlazorDashboard": "Blazor 대시보드",
+  "Chart": "차트",
+  "ChartType": "차트 유형",
+  "DataGrid": "데이터 그리드",
+  "DataSource": "데이터 소스",
+  "Drag_And_Drop": "여기에 .xlsx 파일을 드래그 앤 드롭",
+  "DropHere": "여기에 파일을 드롭하세요",
+  "Load_Internal_Sample": "내장 샘플 데이터로 표시",
+  "LoadData": "데이터를 선택해 주세요",
+  "LoadingData": "데이터를 불러오는 중입니다...",
+  "OR": "또는",
+  "Select_Xlsx_File": ".xlsx 파일 선택",
+  "XAxis": "X축",
+  "YAxis": "Y축"
+}

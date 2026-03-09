@@ -1,0 +1,303 @@
+/* /Components/ChartView.razor.rz.scp.css */
+.chart-view[b-wqpcvzs1g7] {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+}
+
+.control-bar[b-wqpcvzs1g7] {
+    padding: 6px 10px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.options-label[b-wqpcvzs1g7] {
+    margin-right: 4px;
+}
+
+.legend-title[b-wqpcvzs1g7] {
+    margin-left: 14px;
+    margin-right: 4px;
+}
+
+[b-wqpcvzs1g7] igc-button::part(base) {
+    color: #fff;
+    background-color: var(--ig-primary-500);
+    text-transform: none;
+}
+
+[b-wqpcvzs1g7] igc-dropdown igc-dropdown-item {
+    transition: background-color ease 0.2s;
+}
+
+    [b-wqpcvzs1g7] igc-dropdown igc-dropdown-item[active] {
+        background-color: var(--ig-primary-200);
+    }
+
+.data-chart-area[b-wqpcvzs1g7] {
+    flex: 1;
+    overflow: hidden;
+}
+/* /Components/DashboardMenu.razor.rz.scp.css */
+[b-iw883p6q26] igc-button {
+    width: 100%;
+    min-width: 220px;
+}
+
+    [b-iw883p6q26] igc-button::part(base) {
+        color: #fff;
+    }
+
+    [b-iw883p6q26] igc-button.load-sample-button::part(base) {
+        background-color: var(--ig-primary-500);
+    }
+
+.dashboard-menu-container[b-iw883p6q26] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+[b-iw883p6q26] .drop-zone {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    border: dashed 4px transparent;
+    transition: border linear 0.2s;
+}
+
+.scroll-window[b-iw883p6q26] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    overflow: auto;
+}
+
+[b-iw883p6q26] .drop-zone::after {
+    content: var(--drop-zone-content);
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(255,255,255,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px;
+    text-align: center;
+    opacity: 0;
+    transition: opacity linear 0.2s;
+    pointer-events: none;
+}
+
+/* hover CSS クラスが付いたら、オレンジ色の破線の枠を表示するよう定義 */
+[b-iw883p6q26] .drop-zone.hover {
+    border: dashed 4px darkorange;
+}
+
+    [b-iw883p6q26] .drop-zone.hover::after {
+        opacity: 1;
+        pointer-events: all;
+    }
+
+.file-upload-region[b-iw883p6q26] {
+    padding: 0 12px;
+    text-align: center;
+}
+
+.divider[b-iw883p6q26] {
+    position: relative;
+    font-size: 10.5px;
+    height: 1em;
+    margin-top: -6px;
+    margin-bottom: -6px;
+}
+
+    .divider[b-iw883p6q26]::before {
+        content: "";
+        display: block;
+        position: absolute;
+        width: 100%;
+        height: 1px;
+        top: 0;
+        bottom: 0;
+        margin: auto;
+        border-bottom: solid 1px #ccc;
+    }
+
+    .divider[b-iw883p6q26]::after {
+        position: absolute;
+        content: var(--divider-content);
+        background-color: #F3F5F7;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 4em;
+        line-height: 1em;
+        margin: auto;
+        white-space: nowrap;
+    }
+
+.guide-message[b-iw883p6q26] {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 13px;
+    margin: 14px 0 0 0;
+}
+
+.progress-style[b-iw883p6q26] {
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-bottom: 12px;
+}
+
+.progress-message[b-iw883p6q26] {
+}
+
+.dashboard-list[b-iw883p6q26] {
+    padding: 0;
+}
+
+.dashboard-item[b-iw883p6q26] {
+    padding: 12px;
+    list-style-type: none !important;
+    color: #2b2c34;
+    margin: 3px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: background-color ease 0.2s;
+}
+
+    .dashboard-item .material-icons[b-iw883p6q26] {
+        color: darkgreen;
+        margin-right: 4px;
+    }
+
+    .dashboard-item:hover[b-iw883p6q26] {
+        background: #e3e3f0;
+        cursor: pointer;
+    }
+
+.dashboard-item-active[b-iw883p6q26] {
+    background: #d1d1e9 !important;
+}
+/* /Components/GridView.razor.rz.scp.css */
+.data-grid-area[b-2p5w0fufsv] {
+    position: absolute;
+    inset: 0;
+    --ig-size: var(--ig-size-small);
+}
+/* /Components/Header.razor.rz.scp.css */
+header[b-opftxkz66n] {
+    height: 54px;
+    display: flex;
+    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: solid 2px var(--ig-primary-500);
+}
+
+    header h1[b-opftxkz66n] {
+        color: var(--ig-primary-500);
+        line-height: unset;
+        margin: 0;
+        flex: 1;
+        font-size: xx-large;
+        font-weight: bold;
+    }
+
+[b-opftxkz66n] igc-button::part(base) {
+    color: #fff;
+    background-color: var(--ig-primary-500);
+}
+
+[b-opftxkz66n] igc-dropdown-item {
+    transition: background-color ease 0.2s;
+}
+
+    [b-opftxkz66n] igc-dropdown-item[active],
+    [b-opftxkz66n] igc-dropdown-item[selected] {
+        background: unset;
+    }
+
+        [b-opftxkz66n] igc-dropdown-item[active]:hover,
+        [b-opftxkz66n] igc-dropdown-item[selected]:hover {
+            background-color: var(--ig-gray-200);
+        }
+
+    [b-opftxkz66n] igc-dropdown-item .material-icons {
+        margin-right: 4px;
+    }
+
+    [b-opftxkz66n] igc-dropdown-item::part(content) {
+        display: flex;
+    }
+/* /Pages/Index.razor.rz.scp.css */
+main[b-c2n4nzwai4] {
+    flex: 1;
+}
+
+[b-c2n4nzwai4] #dockmanager1 {
+    width: 100%;
+    height: 100%;
+}
+
+.dockmanager-content[b-c2n4nzwai4] {
+    position: absolute;
+    inset: 0;
+    overflow: auto;
+}
+
+footer[b-c2n4nzwai4] {
+    border-top: solid 1px #ccc;
+    padding-top: 12px;
+    display: flex;
+    justify-content: right;
+}
+
+    footer a[b-c2n4nzwai4] {
+        color: var(--ig-primary-500);
+        text-decoration: none;
+        line-height: 24px;
+    }
+
+        footer a:hover[b-c2n4nzwai4], footer a:active[b-c2n4nzwai4] {
+            text-decoration: underline;
+        }
+
+        footer a.appendix-link[b-c2n4nzwai4] {
+            background-image: url(./ig-logo.svg);
+            background-repeat: no-repeat;
+            padding-left: 32px;
+        }
+/* /Shared/MainLayout.razor.rz.scp.css */
+.page-container[b-5tz02pjl43] {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    opacity: 0;
+    transition: opacity linear 0.2s;
+}
+
+    .page-container.ready[b-5tz02pjl43] {
+        opacity: 1;
+    }
