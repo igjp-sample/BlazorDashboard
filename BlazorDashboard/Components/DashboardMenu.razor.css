@@ -1,4 +1,4 @@
-﻿::deep igc-button {
+::deep igc-button {
     width: 100%;
     min-width: 220px;
 }
@@ -8,7 +8,7 @@
     }
 
     ::deep igc-button.load-sample-button::part(base) {
-        background-color: hsla(var(--igc-primary-500), var(--igc-primary-a));
+        background-color: var(--ig-primary-500);
     }
 
 .dashboard-menu-container {
@@ -38,33 +38,33 @@
     overflow: auto;
 }
 
-    ::deep .drop-zone::after {
-        content: "ここににファイルをドロップ";
-        position: absolute;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        right: 0;
-        background-color: rgba(255,255,255,0.8);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0 10px;
-        text-align: center;
-        opacity: 0;
-        transition: opacity linear 0.2s;
-        pointer-events: none;
-    }
+::deep .drop-zone::after {
+    content: "ここににファイルをドロップ";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(255,255,255,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px;
+    text-align: center;
+    opacity: 0;
+    transition: opacity linear 0.2s;
+    pointer-events: none;
+}
 
-    /* hover CSS クラスが付いたら、オレンジ色の破線の枠を表示するよう定義 */
-    ::deep .drop-zone.hover {
-        border: dashed 4px darkorange;
-    }
+/* hover CSS クラスが付いたら、オレンジ色の破線の枠を表示するよう定義 */
+::deep .drop-zone.hover {
+    border: dashed 4px darkorange;
+}
 
-        ::deep .drop-zone.hover::after {
-            opacity: 1;
-            pointer-events: all;
-        }
+    ::deep .drop-zone.hover::after {
+        opacity: 1;
+        pointer-events: all;
+    }
 
 .file-upload-region {
     padding: 0 12px;
@@ -95,7 +95,7 @@
         position: absolute;
         content: "または";
         padding: 0 10px;
-        background-color: var(--igc-pane-content-background, var(--igc-border-color, #F3F5F7));
+        background-color: #F3F5F7;
         top: 0;
         left: 0;
         right: 0;
@@ -104,6 +104,7 @@
         height: 1em;
         line-height: 1em;
         margin: auto;
+        white-space: nowrap;
     }
 
 .guide-message {
