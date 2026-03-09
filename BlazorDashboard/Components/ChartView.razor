@@ -1,12 +1,13 @@
-﻿@using System.Data
+@using System.Data
 @using BlazorDashboard.Services
 @implements IAsyncDisposable
 @inject IJSRuntime JS
+@inject I18nText I18n
 
 <div class="chart-view">
 
     <div class="control-bar">
-        <label class="options-label">Category Type: </label>
+        <label class="options-label">@_T.ChartType: </label>
         <IgbDropdown>
             <IgbButton slot="target">@SeriesType <span class="material-icons">expand_more</span></IgbButton>
             @foreach (var type in SeriesTypes)
@@ -17,7 +18,7 @@
             }
         </IgbDropdown>
 
-        <span class="legend-title">X軸: </span>
+        <span class="legend-title">@_T.XAxis: </span>
         <IgbDropdown>
             <IgbButton slot="target">@XColumn <span class="material-icons">expand_more</span></IgbButton>
             @foreach (var column in ColumnsX)
@@ -28,7 +29,7 @@
             }
         </IgbDropdown>
 
-        <span class="legend-title">Y軸: </span>
+        <span class="legend-title">@_T.YAxis: </span>
         <IgbDropdown>
             <IgbButton slot="target">@YColumn <span class="material-icons">expand_more</span></IgbButton>
             @foreach (var column in ColumnsY)
@@ -151,7 +152,7 @@
 {
     <div class="overlay">
         <span class="overlay-title">
-            データを選択してください
+            @_T.LoadData
         </span>
     </div>
 }
@@ -185,6 +186,13 @@
     private IJSObjectReference? JSModule;
 
     private ElementReference DataChartContainerRef;
+    
+    private LocalizedText _T = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _T = await this.I18n.GetTextTableAsync<LocalizedText>(this);
+    }
 
     public override async Task SetParametersAsync(ParameterView parameters)
     {

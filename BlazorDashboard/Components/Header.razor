@@ -1,18 +1,24 @@
+@inject I18nText I18n
+
 <header>
 
     <h1>Blazor Dashboard</h1>
 
     <div class="actions">
         <IgbDropdown>
-            <IgbButton slot="target"><span class="material-icons">add</span> 表示の追加 <span class="material-icons">more_vert</span></IgbButton>
+            <IgbButton slot="target">
+                <span class="material-icons">add</span>
+                @_T.AddVisualization
+                <span class="material-icons">more_vert</span>
+            </IgbButton>
             <IgbDropdownItem @onclick="@(() => OnClickAddComponent.InvokeAsync(nameof(DashboardMenu)))" Active="false" Selected="false">
-                <span class="material-icons">description</span> データソース
+                <span class="material-icons">description</span> @_T.DataSource
             </IgbDropdownItem>
             <IgbDropdownItem @onclick="@(() => OnClickAddComponent.InvokeAsync(nameof(GridView)))" Active="false" Selected="false">
-                <span class="material-icons">view_list</span> データグリッド
+                <span class="material-icons">view_list</span> @_T.DataGrid
             </IgbDropdownItem>
             <IgbDropdownItem @onclick="@(() => OnClickAddComponent.InvokeAsync(nameof(ChartView)))" Active="false" Selected="false">
-                <span class="material-icons">bar_chart</span> チャート
+                <span class="material-icons">bar_chart</span> @_T.Chart
             </IgbDropdownItem>
         </IgbDropdown>
     </div>
@@ -22,4 +28,11 @@
 @code {
     [Parameter]
     public EventCallback<string> OnClickAddComponent { get; set; }
+
+    private LocalizedText _T = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _T = await this.I18n.GetTextTableAsync<LocalizedText>(this);
+    }
 }

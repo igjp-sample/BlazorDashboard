@@ -3,6 +3,7 @@
 @using static BlazorDashboard.Components.DashboardMenu
 @implements IAsyncDisposable
 @inject IJSRuntime JS
+@inject I18nText I18n
 @inject DashboardService DashboardService
 @inject DockManagerHelper Helper
 
@@ -56,55 +57,73 @@
     /// <summary>
     /// 初期リスト
     /// </summary>
-    private readonly IEnumerable<ComponentDescriptor> _InitialComponents = new ComponentDescriptor[]
+    private IEnumerable<ComponentDescriptor> GetInitialComponents()
     {
-        new(Id:"content1", "データソース", ComponentName:nameof(DashboardMenu)),
-        new(Id:"content2", "データグリッド", ComponentName:nameof(GridView)),
-        new(Id:"content3", "チャート", ComponentName:nameof(ChartView)),
-    };
+        return new ComponentDescriptor[]
+          {
+            new(Id:"content1", _T.DataSource, ComponentName:nameof(DashboardMenu)),
+            new(Id:"content2", _T.DataGrid, ComponentName:nameof(GridView)),
+            new(Id:"content3", _T.Chart, ComponentName:nameof(ChartView)),
+          };
+    }
 
-#pragma warning disable BL0005
     /// <summary>
     /// ドックマネージャーの初期レイアウト
     /// </summary>
-    private readonly IgbDockManagerLayout _InitialLayout = new IgbDockManagerLayout
+    private IgbDockManagerLayout _InitialLayout = new IgbDockManagerLayout();
+
+#pragma warning disable BL0005
+    private IgbDockManagerLayout GetInitialLayout()
     {
-        RootPane = new IgbSplitPane
-        {
-            PaneType = DockManagerPaneType.SplitPane,
-            Orientation = SplitPaneOrientation.Horizontal,
-        }.WithPanes(
-                new IgbContentPane
-                {
-                    PaneType = DockManagerPaneType.ContentPane,
-                    ContentId = "content1",
-                    Header = "データソース",
-                    Size = 25
-                },
-                new IgbSplitPane
+        return new IgbDockManagerLayout
+            {
+                RootPane = new IgbSplitPane
                 {
                     PaneType = DockManagerPaneType.SplitPane,
-                    Orientation = SplitPaneOrientation.Vertical,
-                    Size = 75,
+                    Orientation = SplitPaneOrientation.Horizontal,
                 }.WithPanes(
                     new IgbContentPane
                     {
                         PaneType = DockManagerPaneType.ContentPane,
-                        ContentId = "content2",
-                        Header = "データグリッド",
-                        Size = 100
+                        ContentId = "content1",
+                        Header = _T.DataSource,
+                        Size = 25
                     },
-                    new IgbContentPane
+                    new IgbSplitPane
                     {
-                        PaneType = DockManagerPaneType.ContentPane,
-                        ContentId = "content3",
-                        Header = "チャート",
-                        Size = 200
-                    }
+                        PaneType = DockManagerPaneType.SplitPane,
+                        Orientation = SplitPaneOrientation.Vertical,
+                        Size = 75,
+                    }.WithPanes(
+                        new IgbContentPane
+                        {
+                            PaneType = DockManagerPaneType.ContentPane,
+                            ContentId = "content2",
+                            Header = _T.DataGrid,
+                            Size = 100
+                        },
+                        new IgbContentPane
+                        {
+                            PaneType = DockManagerPaneType.ContentPane,
+                            ContentId = "content3",
+                            Header = _T.Chart,
+                            Size = 200
+                        }
+                    )
                 )
-            )
-    };
+            };
+    }
 #pragma warning restore BL0005
+
+    private LocalizedText _T = new();
+
+    private readonly TaskCompletionSource _initializedCompletionSource = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _T = await this.I18n.GetTextTableAsync<LocalizedText>(this);
+        _initializedCompletionSource.SetResult();
+    }
 
     /// <summary>
     /// ダッシュボード選択時に呼び出されます。
@@ -121,15 +140,18 @@
     {
         if (firstRender)
         {
+            await _initializedCompletionSource.Task;
+
             // ブラウザのローカルストレージに JSON 形式で保存しておいた表示コンポーネントの情報を、逆シリアル化して復元
             var componentsJson = await this.JS.InvokeAsync<string?>("localStorage.getItem", "BlazorDashboard/components");
             var components = JsonSerializer.Deserialize<ComponentDescriptor[]>(componentsJson ?? "null");
-            this.Components.AddRange(components ?? _InitialComponents);
+            this.Components.AddRange(components ?? GetInitialComponents());
             this.StateHasChanged();
 
             // ブラウザのローカルストレージに保存しておいたドックマネージャーのレイアウト情報から、レイアウトを復元
             var layout = await this.JS.InvokeAsync<string?>("localStorage.getItem", "BlazorDashboard/layout");
             if (!string.IsNullOrEmpty(layout)) await this.Helper.RestoreLayoutAsync("#dockmanager1", layout);
+            else this._InitialLayout = GetInitialLayout();
 
             // ドックマネージャーが発行するイベントを購読
             this._Subscriptions.Add(await this.Helper.SubscribeLayoutChangeEventAsync("#dockmanager1", OnLayoutChange));
@@ -144,9 +166,9 @@
         var id = Guid.NewGuid().ToString();
         var descriptor = componentName switch
         {
-            nameof(DashboardMenu) => new ComponentDescriptor(id, "データソース", componentName),
-            nameof(GridView) => new ComponentDescriptor(id, "データグリッド", componentName),
-            nameof(ChartView) => new ComponentDescriptor(id, "チャート", componentName),
+            nameof(DashboardMenu) => new ComponentDescriptor(id, _T.DataSource, componentName),
+            nameof(GridView) => new ComponentDescriptor(id, _T.DataGrid, componentName),
+            nameof(ChartView) => new ComponentDescriptor(id, _T.Chart, componentName),
             _ => throw new Exception()
         };
         await this.AddComponentAsync(descriptor);

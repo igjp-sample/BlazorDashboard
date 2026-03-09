@@ -1,6 +1,7 @@
 @using System.Data
 @implements IAsyncDisposable
 @inject IJSRuntime JS;
+@inject I18nText I18n
 
 <div @ref="DataGridContainerRef" class="data-grid-area">
     <IgbGrid Height="100%"
@@ -16,7 +17,7 @@
 {
     <div class="overlay">
         <span class="overlay-title">
-            データを選択してください
+            @_T.LoadData
         </span>
     </div>
 }
@@ -29,6 +30,13 @@
     private IJSObjectReference? JSModule;
 
     private ElementReference DataGridContainerRef;
+
+    private LocalizedText _T = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _T = await this.I18n.GetTextTableAsync<LocalizedText>(this);
+    }
 
     public override async Task SetParametersAsync(ParameterView parameters)
     {

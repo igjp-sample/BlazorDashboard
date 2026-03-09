@@ -39,7 +39,7 @@
 }
 
 ::deep .drop-zone::after {
-    content: "ここににファイルをドロップ";
+    content: var(--drop-zone-content);
     position: absolute;
     top: 0;
     left: 0;
@@ -93,15 +93,12 @@
 
     .divider::after {
         position: absolute;
-        content: "または";
-        padding: 0 10px;
+        content: var(--divider-content);
         background-color: #F3F5F7;
         top: 0;
         left: 0;
         right: 0;
-        right: 0;
-        width: 3em;
-        height: 1em;
+        width: 4em;
         line-height: 1em;
         margin: auto;
         white-space: nowrap;

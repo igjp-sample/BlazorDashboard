@@ -1,0 +1,17 @@
+{
+  "AddVisualization": "Add Visualization",
+  "DataSource": "Data Source",
+  "DataGrid": "Data Grid",
+  "Chart": "Chart",
+  "Select_Xlsx_File": "Select a .xlsx file",
+  "OR": "OR",
+  "Load_Internal_Sample": "Load an internal sample",
+  "Drag_And_Drop": "Drag and drop a .xlsx file here",
+  "DropHere": "Drop your file here",
+  "LoadData": "Load Data",
+  "LoadingData": "Loading data...",
+  "ChartType": "Chart Type",
+  "XAxis": "X-Axis",
+  "YAxis": "Y-Axis"
+
+}

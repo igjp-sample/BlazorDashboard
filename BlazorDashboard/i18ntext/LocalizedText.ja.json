@@ -1,0 +1,16 @@
+{
+  "AddVisualization": "表示の追加",
+  "DataSource": "データソース",
+  "DataGrid": "データグリッド",
+  "Chart": "チャート",
+  "Select_Xlsx_File": ".xlsx ファイル選択",
+  "OR": "または",
+  "Load_Internal_Sample": "内蔵のサンプルデータで表示",
+  "Drag_And_Drop": "ここにファイルをドラッグ & ドロップ",
+  "DropHere": "ここににファイルをドロップ",
+  "LoadData": "データを選択してください",
+  "LoadingData": "データを設定中です",
+  "ChartType": "チャート種別",
+  "XAxis": "X軸",
+  "YAxis": "Y軸"
+}
